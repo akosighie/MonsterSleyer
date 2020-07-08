@@ -50,7 +50,8 @@ export default {
     }
 
     .main-bg {
-        background-image: url('./assets/castle_background.gif');
+        /* background-image: url('./assets/castle_background.gif'); */
+        background-image: url('./assets/dungeons/grassland2.gif');
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;

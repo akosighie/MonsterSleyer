@@ -11,7 +11,7 @@
                         <b-button
                             variant="info"
                             size="sm"
-                            @click="$router.push('/dungeon')"
+                            @click="$router.push(`/dungeon/${account.characterInfo.characterId}`)"
                             >Dungeon
                         </b-button>
 
@@ -29,8 +29,9 @@
       <b-collapse  id="accordion-1" visible accordion="my-accordion" role="tabpanel">
         <b-card-body>
           <b-card-text>
-              <character-skill>
-              </character-skill>
+              <character-info
+                :characterInfo="account.characterInfo">
+              </character-info>
           </b-card-text>
           
         </b-card-body>
@@ -59,6 +60,9 @@
       <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
         <b-card-body>
           <!-- <b-card-text>{{ text }}</b-card-text> -->
+          <character-inventory
+            :equipment="account.equipments">
+          </character-inventory>
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -70,6 +74,10 @@
       <b-collapse id="accordion-4" accordion="my-accordion" role="tabpanel">
         <b-card-body>
           <!-- <b-card-text>{{ text }}</b-card-text> -->
+          <character-skill
+            :skills="account.skills">
+          </character-skill>
+          <!-- {{account.skills}} -->
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -82,18 +90,37 @@ import  accountService  from '../../mixins/accountService';
 import { eventBus } from '../../main';
 import CharacterSkill from './Character-Skill';
 import CharacterStats from './Character-Stats';
+import CharacterInfo from './Character-Info';
+import CharacterInventory from './Character-Inventory';
 
 export default {
     components: {
         'character-skill': CharacterSkill,
-        'character-stats': CharacterStats
+        'character-stats': CharacterStats,
+        'character-info': CharacterInfo,
+        'character-inventory': CharacterInventory
     },
     data() {
         return {
             account: {
                 stats: {},
+                characterInfo: {
+                  accountId: '',
+                  characterId: '',
+                  classType: 1,
+                  level: 1,
+                  name: '',
+                  nextLevelExp: 0,
+                  totalExp: 0,
+                  dungeonAccess: [] 
+                },
                 weaponBonus: {},
                 armorBonus: {},
+                equipments: {
+                  armor: '',
+                  weapon: ''
+                },
+                skills: ''
             }
         }
     },
@@ -102,13 +129,29 @@ export default {
         CheckAccountId(id){
             this.getCharacterDetails(id).then(res => {
                 console.log(res, 'getaccount');
+
+                // charinfo
+                this.account.characterInfo.accountId = res.accountId;
+                this.account.characterInfo.characterId = res._id;
+                this.account.characterInfo.classType = res.classType;
+                this.account.characterInfo.level = res.level;
+                this.account.characterInfo.name = res.name;
+                this.account.characterInfo.nextLevelExp = res.nextLevelExp;
+                this.account.characterInfo.totalExp = res.totalExp;
+                this.account.characterInfo.dungeonAccess = res.dungeonAccess;
+                
+                // stats
                 this.account.stats = res.stats;
                 this.account.weaponBonus = res.equipment.weapon.bonus;
                 this.account.armorBonus = res.equipment.armor.bonus;
 
-                console.log(this.account.stats, 'stat');
-                console.log(this.account.weaponBonus, 'weapon');
-                console.log(this.account.armorBonus, 'equipment');
+                // inventory
+                this.account.equipments.armor = res.equipment.armor.name;
+                this.account.equipments.weapon = res.equipment.weapon.name;
+
+                // skills
+                this.account.skills = res.skills;
+
                 this.$emit('player-info', res);
             })
             .catch(error => {
