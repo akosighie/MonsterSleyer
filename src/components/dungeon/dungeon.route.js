@@ -2,7 +2,7 @@ import Dungeon from './dungeon';
 
 const routes = [
     {
-        path: '/dungeon',
+        path: '/dungeon/:id',
         component: Dungeon
     }
 ]
