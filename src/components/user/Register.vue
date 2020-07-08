@@ -9,59 +9,42 @@
                 </b-col>
               
                 <b-col >
-                  <b-form-input id="fullName">
-                      <!--  v-model.lazy="playerAccount.fullName"
-                      @blur="$v.playerAccount.fullName.$touch()" -->
+                  <b-form-input id="fullName" 
+                  v-model="PlayerAccount.fullName"
+                  :class="{hasErrors: $v.PlayerAccount.fullName.$error}"
+                  @blur="$v.PlayerAccount.fullName.$touch()">
                   </b-form-input>
-
-                  <p>
-                      <!-- v-if="!$v.playerAccount.fullName.required 
-                    && $v.playerAccount.fullName.$error" -->
-                    FullName is Required!
-                  </p>
+                 <p class="error-message" v-if="!$v.PlayerDetails.fullName.required && $v.PlayerDetails.fullName.$error">Full Name is required</p>
                 </b-col>
               </b-row>
               
               <b-row align-h="start">
                 <b-col cols="3">
                   <label for="">Email</label>
-                </b-col>
-              
+                </b-col>              
                 <b-col >
-                <b-form-input id="input-Email">
-                    <!-- v-model.lazy="playerAccount.email"
-                  @blur="$v.playerAccount.email.$touch()" -->
+                <b-form-input id="input-Email" 
+                v-model="PlayerDetails.email"
+                :class="{hasErrors: $v.PlayerDetails.email.$error}"
+                @blur="$v.PlayerDetails.email.$touch()">
                 </b-form-input>
-                <p>
-                    <!--  v-if="!$v.playerAccount.email.required 
-                  && $v.playerAccount.email.$error" -->
-                  Email is Required
-                </p>
-                 <p  >
-                    <!-- v-if="!$v.playerAccount.email.email 
-                  && $v.playerAccount.email.$error" -->
-                  Enter Valid Email
-                </p>
-           
+                <p class="error-message" v-if="!$v.PlayerDetails.email.required && $v.PlayerDetails.email.$error">Email is required</p>
+                <p class="error-message" v-if="!$v.PlayerDetails.email.email">Invalid email</p>           
                 </b-col>
               </b-row>
 
               <b-row align-h="start">
                 <b-col cols="3">
                   <label for="">Username</label>
-                </b-col>
-              
+                </b-col>              
                 <b-col >
-                <b-form-input id="username">
-                <!--  v-model="playerAccount.username"
-                  @blur="$v.playerAccount.username.$touch()" -->
+                <b-form-input id="username"
+                v-model="PlayerDetails.username"
+                :class="{hasErrors: $v.PlayerDetails.username.$error}"
+                @blur="$v.PlayerDetails.username.$touch()">
                 </b-form-input>
-                <p >
-                    <!-- v-if="!$v.playerAccount.username.required  
-                  && $v.playerAccount.username.$error" -->
-                  Username is Required
-                </p>
-           
+                <p class="error-message" v-if="!$v.PlayerDetails.username.required && $v.PlayerDetails.username.$error">Username is required</p>
+                <p class="error-message" v-if="!$v.PlayerDetails.username.minLength">Minumum length is 6</p>           
                 </b-col>
               </b-row>
 
@@ -72,15 +55,13 @@
               
                 <b-col >
                 <b-form-input id="input-password"  
-                  type="password">
-                  <!-- v-model.lazy="playerAccount.password"
-                 @blur="$v.playerAccount.password.$touch()" -->
+                  type="password"
+                  v-model="PlayerDetails.password"
+                  :class="{hasErrors: $v.PlayerDetails.password.$error}"
+                  @blur="$v.PlayerDetails.password.$touch()">
                 </b-form-input>
-                <p >
-                    <!-- v-if="!$v.playerAccount.password.required
-                  && $v.playerAccount.password.$error" -->
-                  Password is Required
-                </p>    
+                <p class="error-message" v-if="!$v.PlayerDetails.password.required && $v.PlayerDetails.password.$error">Password is required</p>
+                <p class="error-message" v-if="!$v.PlayerDetails.password.minLength">Minumum length is 6</p> 
                 </b-col>
               </b-row>
 
@@ -157,12 +138,25 @@
 </template>
 <script>
 import { characterClassMixin } from '../../mixins/characterClass';
+import {required, email, minLength, maxLength} from 'vuelidate/lib/validators';
 export default {
     data(){
        return {
             classType: 1
        }
     },
+     validations:{
+
+          PlayerAccount:{
+                fullName:{required},
+                email:{required, email},
+                username:{required, minLength: minLength(6)},
+                password:{required, minLength: minLength(6)},
+                characterName:{required, minLength: minLength(6), maxLength:maxLength(20)},
+                classType: {required}
+          }
+
+      },
     mixins: [characterClassMixin],
 }
 </script>
@@ -176,4 +170,10 @@ export default {
     .saber {
     height: 250px;
     }
+    .hasErrors {
+    border-color: red;
+}
+.error-message {
+    color: red;
+}
 </style>
