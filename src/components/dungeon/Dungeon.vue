@@ -1,7 +1,7 @@
 <template>
   <div>
       <b-row>
-          <b-col cols="8">
+          <b-col cols="7">
             <b-carousel
               id="carousel-1"
                 v-model="dungeonValue"
@@ -24,7 +24,7 @@
 
             </b-carousel>
           </b-col>
-          <b-col cols="4">
+          <b-col cols="5">
            
                <b-button 
                 block 
@@ -49,7 +49,13 @@
               </b-row>
 
               <b-row>
-                <!-- {{this.dungeons[dungeonValue]}} -->
+                <dungeon-enemies
+                    :dungeon="this.dungeons[dungeonValue].enemies"
+                > 
+
+                </dungeon-enemies>
+                <!-- {{this.dungeons[dungeonValue]}} 
+                 :dungeon="this.dungeons.find(c => c.__v == dungeonValue).enemies"-->
                 <!-- <ul v-for="(enm, i) in this.dungeons[dungeonValue].enemies" v-bind:key="i">
                   <li>{{enm.name}}</li>
                   <b-row>
@@ -81,9 +87,13 @@ export default {
     },
     data() {
       return {
-        dungeons: [],
+        dungeons: [
+          {
+            enemies: []
+          }
+        ],
         intervalValue: 0,
-        dungeonValue: 0
+        dungeonValue: 0,
       }
     },
     mixins: [characterService, dungeonHelperMixin],
@@ -108,6 +118,11 @@ export default {
                 this.$router.push(`/unauthorized`);
             });
         }
+    },
+    computed: {
+      enemies(id){
+        return id;
+      }
     },
     created() {
         eventBus.$emit('loading', true);
