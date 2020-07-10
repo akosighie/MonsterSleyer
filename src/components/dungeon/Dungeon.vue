@@ -30,7 +30,7 @@
                 block 
                 variant="info"
                 size="lg"
-                @click="$router.push('/')"
+                @click="$router.push(`/dungeon/${dugeonId}`)"
                 >Enter
               </b-button>
 
@@ -54,16 +54,6 @@
                 > 
 
                 </dungeon-enemies>
-                <!-- {{this.dungeons[dungeonValue]}} 
-                 :dungeon="this.dungeons.find(c => c.__v == dungeonValue).enemies"-->
-                <!-- <ul v-for="(enm, i) in this.dungeons[dungeonValue].enemies" v-bind:key="i">
-                  <li>{{enm.name}}</li>
-                  <b-row>
-                    <b-col>
-                      Drop
-                    </b-col>
-                  </b-row>
-                </ul> -->
               </b-row>
 
               
@@ -81,6 +71,7 @@ import { eventBus } from '../../main';
 // import DungeonCarousel from './Dungeon-Carousel';
 import DungeonEnemies from './Dungeon-Enemies';
 import { dungeonHelperMixin } from '../../mixins/dungeonHelper';
+import localStorageHelper from '../../mixins/localStorageHelper';
 export default {
     components: {
         'dungeon-enemies': DungeonEnemies
@@ -94,9 +85,10 @@ export default {
         ],
         intervalValue: 0,
         dungeonValue: 0,
+
       }
     },
-    mixins: [characterService, dungeonHelperMixin],
+    mixins: [characterService, dungeonHelperMixin, localStorageHelper],
     methods: {
         onSlideStart(dungeonValue) {
             this.sliding = true
@@ -105,7 +97,8 @@ export default {
             this.sliding = false
         },
         CheckCharacterId(id){
-            this.getDungeons(id).then(res => {
+          console.log(id, 'localstoraagecharid');
+            this.getCharacterDungeons(id).then(res => {
                 console.log(res, 'getDungeons');
                 this.dungeons = res;
                 eventBus.$emit('loading', false);
@@ -120,14 +113,16 @@ export default {
         }
     },
     computed: {
-      enemies(id){
-        return id;
+      dugeonId(){
+        console.log('test');
+        return this.dungeons[this.dungeonValue]._id;
       }
     },
     created() {
         eventBus.$emit('loading', true);
-        this.CheckCharacterId(this.$route.params.id);
-    }
+        // get values from localStorage
+        this.CheckCharacterId(this.getCharacterId());
+    },
   }
 </script>
 <style scoped>
