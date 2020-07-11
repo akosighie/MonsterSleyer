@@ -203,7 +203,34 @@ export const characterClassMixin = {
                         description: ''
                     }
                 ]
-            }]
+            }],
+            CharacterClassType: [
+                {
+                    id: 1,
+                    name: 'saber',
+                    imageFile: 'saber'
+                },
+                {
+                    id: 2,
+                    name: 'archer',
+                    imageFile: 'archer'
+                },
+                {
+                    id: 3,
+                    name: 'lancer',
+                    imageFile: 'lancer'
+                },
+                {
+                    id: 4,
+                    name: 'berserker',
+                    imageFile: 'berserker'
+                },
+                {
+                    id: 5,
+                    name: 'caster',
+                    imageFile: 'caster'
+                }
+            ]
             // fruits: ['Apple', 'Banana', 'Mango', 'Melon'],
         }
     },
@@ -213,7 +240,10 @@ export const characterClassMixin = {
         },
         CharMoveSkill(id){
             return this.charMove.concat(this.characterClass.find(c => c.id == id).skill);
-            // .concat(this.characterClass.find(c => c.id == id).skill)
+        },
+        getCharacterClassTypeImage(id){
+            console.log(id, 'getCharacterClassTypeImage');
+            return this.CharacterClassType.find(c => c.id == id).imageFile;
         }
     }
 }

@@ -1,22 +1,24 @@
 <template>
-        <div >
-           
-            <b-container fluid="lg" class="main-bg">
+    <div >   
+        <b-container 
+            fluid="lg" 
+            class="main-bg" 
+            :style="{ backgroundImage: `url(${dungeonImage})` }">
                
-            <loading :active.sync="isLoading" 
-                :is-full-page="fullPage"></loading>
-                <h1>Monster Slayer</h1>
-                
-                <router-view>
-                </router-view>
-            </b-container>
-          
-            
+            <loading 
+                :active.sync="isLoading" 
+                :is-full-page="fullPage">
+            </loading>
 
-   
-       
-        </div>
-        
+            <h1 v-show="!isGameBattle">
+                Monster Slayer
+            </h1>
+
+            <router-view>
+            </router-view>
+                    
+        </b-container>
+    </div>        
 </template>
 <script>
 import Loading from 'vue-loading-overlay';
@@ -29,14 +31,28 @@ export default {
     data() {
         return {
             isLoading: false,
-            fullPage: true
+            fullPage: true,
+            dungeonImage: 'abc',
+            isGameBattle: false
         }
     },
     created() {
-        // this.hasplayerAccount = this.isplayerAccountHasValue(); //JSON.stringify(localStorage.getItem("playerAccount")) != 'null' ? true : false;
-        // this.Character[0].name =  this.hasplayerAccount.username;
+    
+        this.dungeonImage = require('./assets/dungeons/grass-field.gif');
+        
+        
+        // refactor code 
+        // single eventbus 
         eventBus.$on('loading', isLoading => {
             this.isLoading = isLoading;
+        })
+
+        eventBus.$on('dungeonImage', dungeonImage => {
+            this.dungeonImage = require(`./assets/dungeons/${dungeonImage}.gif`);
+        })
+
+        eventBus.$on('isGameBattle', isGameBattle => {
+            this.isGameBattle = isGameBattle;
         })
     }
 }
@@ -51,7 +67,7 @@ export default {
 
     .main-bg {
         /* background-image: url('./assets/castle_background.gif'); */
-        background-image: url('./assets/dungeons/grassland2.gif');
+        /* background-image: url('./assets/dungeons/grassland2.gif'); */
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;

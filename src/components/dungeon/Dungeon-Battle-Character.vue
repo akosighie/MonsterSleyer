@@ -1,0 +1,120 @@
+<template>
+    <div>
+        <!-- <div :class="{'img-hide': char.life == 0}"> -->
+        <img 
+            :src="characterClassImage()"
+            :class="applyCharacterClass()" 
+        />
+        <!-- :class="ApplyCharacterClass(char.modelType, char.isAttacked, char.isHealed)" -->
+        <!-- </div> -->
+    </div>    
+</template>
+<script>
+export default {
+    props: {
+        character: {}
+    },
+    methods: {
+        characterClassImage() {
+            return require(`../../assets/${this.character.type}/${this.character.image}.png`)
+        },
+        applyCharacterClass() {
+            return `${this.character.image}`;
+        }
+    }
+}
+</script>
+<style scoped>
+
+    .monster-bunny{
+        position: relative;
+        left: 120px;
+        top: 165px;
+    }
+
+    .giant-bee{
+        position: relative;
+        height: 272px;
+        left: 153px;
+    }
+
+    .killer-bunny{
+        position: relative;
+        height: 217px;
+        left: 281px;
+        top: 225px;
+    }
+
+    .mutant-frog {
+        position: relative;
+        height: 238px;
+        top: 222px;
+        left: 139px;
+    }
+
+    /* dungeon 2 */
+
+    .direwolf {
+        position: relative;
+        height: 210px;
+        top: 249px;
+        left: 276px;
+    }
+
+    .fengalon {
+        position: relative;
+        height: 279px;
+        top: 195px;
+        left: 174px;
+    }
+
+    .minotaur {
+        position: relative;
+        top: 161px;
+        left: 187px;
+    }
+
+    .fenrir {
+        position: relative;
+        top: 111px;
+        left: 135px;
+    }
+
+    .archer {
+        position: relative;
+        height: 274px;
+        top: 182px;
+        left: 100px;
+    }
+
+    .caster {
+        position: relative;
+        height: 226px;
+        top: 196px;
+        left: 118px;
+    }
+
+    .lancer {
+        position: relative;
+        height: 240px;
+        top: 192px;
+        left: 110px;
+    }
+
+    .berserker {
+        position: relative;
+        height: 240px;
+        top: 201px;
+        left: 93px;
+    }
+
+    .saber {
+        position: relative;
+        height: 240px;
+        top: 205px;
+        left: 98px;
+    }
+    
+
+    
+</style>

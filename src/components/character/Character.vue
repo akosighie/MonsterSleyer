@@ -11,14 +11,15 @@
                         <b-button
                             variant="info"
                             size="sm"
-                            @click="$router.push(`/dungeon/${account.characterInfo.characterId}`)"
+                            @click="$router.push(`/dungeon`)"
                             >Dungeon
                         </b-button>
+                        <!--  @click="$router.push(`/dungeon/${account.characterInfo.characterId}`)" -->
 
                         <b-button
                             variant="info"
                             size="sm"
-                            @click="$router.push('/d')"
+                            @click="$router.push('/')"
                             >Logout
                         </b-button>
 
@@ -92,6 +93,7 @@ import CharacterSkill from './Character-Skill';
 import CharacterStats from './Character-Stats';
 import CharacterInfo from './Character-Info';
 import CharacterInventory from './Character-Inventory';
+import localStorageHelper from '../../mixins/localStorageHelper';
 
 export default {
     components: {
@@ -124,7 +126,7 @@ export default {
             }
         }
     },
-    mixins: [accountService],
+    mixins: [accountService, localStorageHelper],
     methods: {
         CheckAccountId(id){
             this.getCharacterDetails(id).then(res => {
@@ -139,6 +141,7 @@ export default {
                 this.account.characterInfo.nextLevelExp = res.nextLevelExp;
                 this.account.characterInfo.totalExp = res.totalExp;
                 this.account.characterInfo.dungeonAccess = res.dungeonAccess;
+                this.setCharacterId(res._id);
                 
                 // stats
                 this.account.stats = res.stats;
@@ -165,6 +168,7 @@ export default {
     },
     created() {
         this.CheckAccountId(this.$route.params.id);
+        this.setAccountId(this.$route.params.id);
     },
     
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
       <b-row>
-          <b-col cols="8">
+          <b-col cols="7">
             <b-carousel
               id="carousel-1"
                 v-model="dungeonValue"
@@ -24,13 +24,13 @@
 
             </b-carousel>
           </b-col>
-          <b-col cols="4">
+          <b-col cols="5">
            
                <b-button 
                 block 
                 variant="info"
                 size="lg"
-                @click="$router.push('/')"
+                @click="$router.push(`/dungeon/${dugeonId}`)"
                 >Enter
               </b-button>
 
@@ -49,15 +49,11 @@
               </b-row>
 
               <b-row>
-                <!-- {{this.dungeons[dungeonValue]}} -->
-                <!-- <ul v-for="(enm, i) in this.dungeons[dungeonValue].enemies" v-bind:key="i">
-                  <li>{{enm.name}}</li>
-                  <b-row>
-                    <b-col>
-                      Drop
-                    </b-col>
-                  </b-row>
-                </ul> -->
+                <dungeon-enemies
+                    :dungeon="this.dungeons[dungeonValue].enemies"
+                > 
+
+                </dungeon-enemies>
               </b-row>
 
               
@@ -75,18 +71,24 @@ import { eventBus } from '../../main';
 // import DungeonCarousel from './Dungeon-Carousel';
 import DungeonEnemies from './Dungeon-Enemies';
 import { dungeonHelperMixin } from '../../mixins/dungeonHelper';
+import localStorageHelper from '../../mixins/localStorageHelper';
 export default {
     components: {
         'dungeon-enemies': DungeonEnemies
     },
     data() {
       return {
-        dungeons: [],
+        dungeons: [
+          {
+            enemies: []
+          }
+        ],
         intervalValue: 0,
-        dungeonValue: 0
+        dungeonValue: 0,
+
       }
     },
-    mixins: [characterService, dungeonHelperMixin],
+    mixins: [characterService, dungeonHelperMixin, localStorageHelper],
     methods: {
         onSlideStart(dungeonValue) {
             this.sliding = true
@@ -95,7 +97,8 @@ export default {
             this.sliding = false
         },
         CheckCharacterId(id){
-            this.getDungeons(id).then(res => {
+          console.log(id, 'localstoraagecharid');
+            this.getCharacterDungeons(id).then(res => {
                 console.log(res, 'getDungeons');
                 this.dungeons = res;
                 eventBus.$emit('loading', false);
@@ -109,10 +112,17 @@ export default {
             });
         }
     },
+    computed: {
+      dugeonId(){
+        console.log('test');
+        return this.dungeons[this.dungeonValue]._id;
+      }
+    },
     created() {
         eventBus.$emit('loading', true);
-        this.CheckCharacterId(this.$route.params.id);
-    }
+        // get values from localStorage
+        this.CheckCharacterId(this.getCharacterId());
+    },
   }
 </script>
 <style scoped>

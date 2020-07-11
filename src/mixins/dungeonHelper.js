@@ -5,12 +5,12 @@ export const dungeonHelperMixin = {
                 {
                     id: 0,
                     name: 'grass-field',
-                    dungeonImgUrl: require('../assets/dungeons/grassland2.gif'),
+                    dungeonImgUrl: require('../assets/dungeons/grass-field.gif'),
                 },
                 {
                     id: 1,
                     name: 'beast-den',
-                    dungeonImgUrl: require('../assets/dungeons/cave.gif'),
+                    dungeonImgUrl: require('../assets/dungeons/beast-den.gif'),
                 },
                 {
                     id: 2,
