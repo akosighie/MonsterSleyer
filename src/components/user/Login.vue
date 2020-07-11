@@ -93,9 +93,18 @@ export default {
             eventBus.$emit('loading', true);
             this.loginAccount(this.loginData).then(res => {
                 // this.getAccount(res.accountId);
-                this.$alertify.alertWithTitle("Login", "Login Success");
+                this.$alertify.success("Login Successfull");
                 eventBus.$emit('loading',false);
-                this.$router.push(`/character/${res.accountId}`);
+
+                  setTimeout(() => { 
+                       this.$alertify.alert().destroy()
+                                  }, 1000);
+
+                                   setTimeout(() => { 
+                         this.$router.push(`/character/${res.accountId}`);
+                                  }, 1000);
+                    
+                
             })
             .catch(error => {
                 console.log(error, 'error');
