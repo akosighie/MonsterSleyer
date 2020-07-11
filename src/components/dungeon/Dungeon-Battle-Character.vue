@@ -25,6 +25,9 @@ export default {
 }
 </script>
 <style scoped>
+    div {
+        height: 360px;
+    }
 
     .monster-bunny{
         position: relative;
