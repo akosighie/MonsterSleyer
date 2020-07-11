@@ -4,7 +4,6 @@
 export default {
     methods: {
         saveAccount(playerAccount){
-            console.log(playerAccount, 'Save Account Service');
             return this.$http.post(`${apiUrl}accounts`, playerAccount).then(res => res.json());
         },
         loginAccount(loginData){
@@ -12,8 +11,6 @@ export default {
                 "username": loginData.username,
                 "password": loginData.password
             }
-            //console.log(loginData, 'service');
-            console.log(userData, 'service');
             return this.$http.post(`${apiUrl}accounts/login`, userData).then(res => res.json());
         },
         getCharacterDetails(accountId){
