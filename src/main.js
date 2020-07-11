@@ -18,11 +18,27 @@ Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(Vuelidate);
 Vue.use(VueResource);
-Vue.use(VueAlertify);
+Vue.use(VueAlertify, {
+  
+
+  glossary: {
+    // dialogs default title
+    title: 'Monster Slayer',
+    // ok button text
+    ok: 'Yes',
+    // cancel button text
+    cancel: 'Cancel',
+  },
+
+});
 
 export const eventBus = new Vue();
 new Vue({
   el: '#app',
   router,
+
+  
+
+
   render: h => h(App)
 })

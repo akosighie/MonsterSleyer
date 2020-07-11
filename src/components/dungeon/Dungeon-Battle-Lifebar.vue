@@ -13,16 +13,19 @@
               </b-col>
               <b-col>
                   <b-progress
-                    :value="character.stats.health" 
-                    :max="character.stats.health"
+                    :value="character.stats.health"
+                    :max="character.stats.maxHealth" 
                     height="25px"
                     variant="danger"
                     class="b-progress-font"
-                    show-value>
-                    </b-progress>
+                    show-value
+                    >
+                    <!--  show-value  
+                      :max="character.stats.health" -->
+                  </b-progress>
                   <b-progress 
                     :value="character.stats.mana" 
-                    :max="character.stats.mana"
+                    :max="character.stats.maxMana"
                     height="15px" 
                     class="b-progress-font"
                     show-value>
@@ -34,6 +37,11 @@
 </template>
 <script>
 export default {
+    data() {
+      return {
+        enemyLifeDefualt: 0
+      }
+    },
     props: {
         character: {}
     },
@@ -43,7 +51,7 @@ export default {
         }
     },
     created() {
-      
+      // this.enemyLifeDefualt = character.stats.health;
     }
 }
 </script>
