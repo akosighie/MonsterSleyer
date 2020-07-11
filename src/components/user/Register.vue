@@ -110,12 +110,15 @@
                 </b-col>
               
                 <b-col >
-                    <b-form-select v-model="classType">
+                    <b-form-select v-model="PlayerAccount.classType"
+                    :class="{hasErrors: $v.PlayerAccount.classType.$error}">
+                       <option selected value="" >Select a Class</option>
                       <option v-for=" (cclass, i) in characterClass.filter(c => c.id != 6)"
                         :key="i" 
                         :value="cclass.id">{{cclass.name}}
                       </option>
-                    </b-form-select>  
+                    </b-form-select>
+                       <p class="error-message" v-if="!$v.PlayerAccount.classType.required && $v.PlayerAccount.classType.$error">Class is required</p>  
                 </b-col>
               </b-row>
               <b-row align-h="center">
@@ -146,7 +149,7 @@ export default {
                   username:'',
                   password:'',
                   characterName:'',
-                  classType:0
+                  classType:''
                 },
             classType: 1
        }
@@ -158,18 +161,13 @@ export default {
                     if(!this.$v.$error)
                     {
                           this.$http.post(apiUrlSaveAccount, this.PlayerAccount).then(res => {
-                              this.$router.push('/');
+                              this.$router.push('/login');
                               
                               }).catch(error => {
-                                  console.log(error);
                                   });
                     }
 
-                },
-                onSelectedClass:function(val)
-                {
-                    this.PlayerDetails.classType = val;
-                }
+                }              
       },
      validations:{
           PlayerAccount:{
