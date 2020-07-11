@@ -117,6 +117,31 @@ export default {
             });
         
         },
+        getEnemyDetails(){
+            this.postEnterDungeon(this.enterDungeonRequest).then(res => {
+                console.log(res, 'getEnterDungeon');
+                this.dungeon = res.dungeon;
+                this.enemy.stats = res.enemy.stats;
+                this.enemy.name = res.enemy.name;
+                this.enemy.image = res.enemy.image;
+                this.enemy.stats.maxHealth = res.enemy.stats.health; 
+                this.enemy.stats.maxMana = res.enemy.stats.mana;
+                console.log(this.dungeon , 'dungeon');
+                eventBus.$emit('loading',false);
+                eventBus.$emit('isGameBattle', true);
+                eventBus.$emit('dungeonImage', this.dungeon.image);
+            })
+            .catch(error => {
+                    console.log(error, 'error');
+                    const errorObj = error.bodyText;
+                    this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
+                    eventBus.$emit('loading',false);
+                    this.$router.push(`/unauthorized`);
+            });
+        },
+        enemyAction(){
+            
+        },
         lifeMinMax(value, maxValue){
             return Math.min(Math.max(parseInt(value), 0), maxValue);
         },
@@ -186,30 +211,12 @@ export default {
         console.log(this.enterDungeonRequest, 'enterDungeonRequest');
 
         // get enemies
-        this.postEnterDungeon(this.enterDungeonRequest).then(res => {
-            console.log(res, 'getEnterDungeon');
-            this.dungeon = res.dungeon;
-            this.enemy.stats = res.enemy.stats;
-            this.enemy.name = res.enemy.name;
-            this.enemy.image = res.enemy.image;
-            this.enemy.stats.maxHealth = res.enemy.stats.health; 
-            this.enemy.stats.maxMana = res.enemy.stats.mana;
-            console.log(this.dungeon , 'dungeon');
-            eventBus.$emit('loading',false);
-            eventBus.$emit('isGameBattle', true);
-            eventBus.$emit('dungeonImage', this.dungeon.image);
-        })
-        .catch(error => {
-                console.log(error, 'error');
-                const errorObj = error.bodyText;
-                this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
-                eventBus.$emit('loading',false);
-                this.$router.push(`/unauthorized`);
-        });
+        this.getEnemyDetails(this.getEnemyDetails());
 
         // get character
         this.GetCharacterDetails(this.getCharacterId());
-    }
+    } 
+
 }
 </script>
 <style>
@@ -228,12 +235,6 @@ export default {
     .alertify .ajs-dialog {
           background-color: rgba(23,67,88,0.5);
     }
-    /* 
-    .alertify .ajs-body {
-        background-color: rgba(23,67,88,0.5);
-    } */
-
-   
     .alertify .ajs-footer{
           background-color: rgba(23,67,88,0.5)
     }
