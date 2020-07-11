@@ -80,10 +80,7 @@
                         <b-button
                             variant="info"
                             size="lg"
-                            @click="$router.push('/character')"
-                           
-                            >Create
-                        </b-button>
+                            @click.prevent="saveAccount()">Create</b-button>
                         <!--  :disabled="isDisabled" -->
                 </b-col>
               </b-row>
@@ -138,6 +135,8 @@
 <script>
 import { characterClassMixin } from '../../mixins/characterClass';
 import {required, email, minLength, maxLength} from 'vuelidate/lib/validators';
+const apiUrlSaveAccount = 'https://monster-slayer-api-staging.herokuapp.com/accounts';
+
 export default {
     data(){
        return {
@@ -152,8 +151,27 @@ export default {
             classType: 1
        }
     },
-     validations:{
+          methods:{
+                saveAccount:function()
+                {
+                    this.$v.$touch()
+                    if(!this.$v.$error)
+                    {
+                          this.$http.post(apiUrlSaveAccount, this.PlayerAccount).then(res => {
+                              this.$router.push('/');
+                              
+                              }).catch(error => {
+                                  console.log(error);
+                                  });
+                    }
 
+                },
+                onSelectedClass:function(val)
+                {
+                    this.PlayerDetails.classType = val;
+                }
+      },
+     validations:{
           PlayerAccount:{
                 fullName:{required},
                 email:{required, email},
