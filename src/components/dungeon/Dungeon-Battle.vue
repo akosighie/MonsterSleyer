@@ -209,7 +209,6 @@ export default {
 
         // get character
         this.GetCharacterDetails(this.getCharacterId());
-
     }
 }
 </script>
@@ -219,4 +218,27 @@ export default {
         font-family: "OptimusPrinceps";
     }
 
+
+     .alertify .ajs-header {
+         background-color: rgba(23,67,88,0.5);
+         color: white;
+    }
+
+
+    .alertify .ajs-dialog {
+          background-color: rgba(23,67,88,0.5);
+    }
+    /* 
+    .alertify .ajs-body {
+        background-color: rgba(23,67,88,0.5);
+    } */
+
+   
+    .alertify .ajs-footer{
+          background-color: rgba(23,67,88,0.5)
+    }
+
+    .alertify .ajs-footer .ajs-buttons .ajs-button {
+        color: white;
+    }
 </style>

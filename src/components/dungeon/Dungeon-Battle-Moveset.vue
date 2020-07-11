@@ -10,9 +10,11 @@
                  v-b-tooltip.hover :title="ToolTipName(move)" -->
 
             
-                <b-button 
+                <b-button
+                        v-b-tooltip.hover title="toolTipName(skill)" 
                         variant="info">
                         Attack
+                        
                 </b-button>
 
                  <b-button 
@@ -33,8 +35,10 @@
                 </span>
 
                 <b-button 
-                        variant="danger">
-                        Run
+                        variant="info"
+                        @click="confirm"
+                        >
+                        Give Up
                 </b-button>
               
                 
@@ -45,6 +49,7 @@
     </div>    
 </template>
 <script>
+import { eventBus } from '../../main';
 export default {
     props: {
         skills: {},
@@ -59,7 +64,22 @@ export default {
                 // this.$emit('enemyTurn-value', true);
                 this.$emit('pass-value', skill);
         },
+        confirm() {
+            this.$alertify.confirmWithTitle("Monster Slayer", 
+                "Are you sure you want to give up?", () => 
+                this.giveUp()
+                ,() => 
+                console.log("test"))
+        },
+        giveUp() {
+            this.$router.push(`/dungeon`)
+            eventBus.$emit('isGameBattle', false)
+        }
+    },
+    created() {
+      
     }
+    
 }
 </script>
 <style scoped>
@@ -72,5 +92,7 @@ export default {
         margin: 0px 5px 10px 5px;
 
     } 
+
+    
 
 </style>
