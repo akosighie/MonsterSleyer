@@ -242,7 +242,6 @@ export const characterClassMixin = {
             return this.charMove.concat(this.characterClass.find(c => c.id == id).skill);
         },
         getCharacterClassTypeImage(id){
-            console.log(id, 'getCharacterClassTypeImage');
             return this.CharacterClassType.find(c => c.id == id).imageFile;
         }
     }

@@ -9,20 +9,6 @@
                 class="button-font"
                  v-b-tooltip.hover :title="ToolTipName(move)" -->
 
-            
-                <b-button
-                        v-b-tooltip.hover title="toolTipName(skill)" 
-                        variant="info">
-                        Attack
-                        
-                </b-button>
-
-                 <b-button 
-                        variant="info">
-                        Focus
-                </b-button>
-
-
                 <span v-for="(skill, i) in skills" v-bind:key="i" >
                     <b-button 
                         class="button-space"  
