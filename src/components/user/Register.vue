@@ -161,10 +161,8 @@ export default {
                     this.$v.$touch()
                     if(!this.$v.$error)
                     {
-                      this.saveAccount(this.PlayerAccount).then(res => { 
-                      console.log(res);
+                      this.saveAccount(this.PlayerAccount).then(res => {  
                       let resp = res.accountId;
-
                       if(resp != undefined || resp != null)
                       {
                          this.$router.push('/login');
