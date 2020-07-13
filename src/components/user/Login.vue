@@ -93,7 +93,8 @@ export default {
             eventBus.$emit('loading', true);
             this.loginAccount(this.loginData).then(res => {
                 // this.getAccount(res.accountId);
-                this.$alertify.success("Login Successfull");
+                let mes = "Login Successfull";
+                this.$alertify.alertWithTitle("Login", mes);
                 eventBus.$emit('loading',false);
 
                   setTimeout(() => { 
