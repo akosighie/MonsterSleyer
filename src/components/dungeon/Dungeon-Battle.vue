@@ -38,9 +38,28 @@
                 </dungeon-battle-moveset>
             </b-col>
             <b-col>
-                <!-- notification -->
+                <dungeon-battle-notification
+                    :gamelogData="ActionLogs"
+                    >
+
+                </dungeon-battle-notification>
             </b-col>
         </b-row>
+
+        <!-- modal -->
+        <!-- <b-button id="show-btn" @click="$bvModal.show('modal-result')">Open Modal</b-button> -->
+
+        <b-modal id="modal-result" class="ms-modal" hide-footer>
+            <template v-slot:modal-title>
+            <!-- Using <code>$bvModal</code> Methods -->
+            Game Result
+            </template>
+            <div class="d-block text-center">
+            <h3>{{gameResult}}</h3>
+            </div>
+            <b-button class="mt-3" block @click="dialogClose()">Close Me</b-button>
+        </b-modal>
+
         </b-container>
         <!-- character lifebar -->
         
@@ -56,12 +75,14 @@ import DungeonBattleCharacterVue from './Dungeon-Battle-Character.vue';
 import DungeonBattleMoveset from './Dungeon-Battle-Moveset';
 import characterService  from '../../mixins/characterService'; 
 import { characterClassMixin } from '../../mixins/characterClass';
+import DungeonBattleNotification from './Dundeon-Battle-Notification';
 
 export default {
     components: {
         'dungeon-battle-lifebar': DungeonBattleLifebar,
         'dungeon-battle-character': DungeonBattleCharacterVue,
-        'dungeon-battle-moveset': DungeonBattleMoveset
+        'dungeon-battle-moveset': DungeonBattleMoveset,
+        'dungeon-battle-notification': DungeonBattleNotification
     },
      data() {
       return {
@@ -85,7 +106,33 @@ export default {
             image: 'saber',
             type: 'players'
         },
-        playerSkills: {}
+        playerSkills: {},
+        enemySkills: {},
+        isEnemyLoaded: false,
+        isPlayerAttackFirst: true,
+        gameResult: '',
+        ActionLogs: { 
+          name: '',
+          action: ''
+        },
+        baseSkills: [
+            {
+                _id: 0,
+                type: 'P',
+                target: 'enemy',
+                name: 'attack',
+                cost: '0',
+                damage: '10'
+            },
+            {
+                _id: 1,
+                type: 'r', //rest
+                target: 'self',
+                name: 'focus',
+                cost: '0',
+                damage: '-10'
+            }
+        ]
       }
     },
     mixins: [   localStorageHelper, 
@@ -103,7 +150,7 @@ export default {
                 this.myPlayer.stats.maxHealth = res.stats.health;
                 console.log(res.stats.health, 'skills'); 
                 this.myPlayer.stats.maxMana = res.stats.mana;
-                this.playerSkills = res.skills;
+                this.playerSkills = this.baseSkills.concat(res.skills);
                 
                 console.log(this.myPlayer, 'myPlayer');
                 eventBus.$emit('loading', false);
@@ -126,7 +173,12 @@ export default {
                 this.enemy.image = res.enemy.image;
                 this.enemy.stats.maxHealth = res.enemy.stats.health; 
                 this.enemy.stats.maxMana = res.enemy.stats.mana;
-                console.log(this.dungeon , 'dungeon');
+                this.enemySkills = this.baseSkills.concat(res.enemy.skills);
+                this.isEnemyLoaded = true;
+                 //this.enemyAction();
+                // console.log(this.enemySkills, 'res.enemy.skills');
+                
+                // console.log(this.dungeon , 'dungeon');
                 eventBus.$emit('loading',false);
                 eventBus.$emit('isGameBattle', true);
                 eventBus.$emit('dungeonImage', this.dungeon.image);
@@ -140,9 +192,28 @@ export default {
             });
         },
         enemyAction(){
+            // console.log(this.enemySkills.length, '-----------------------------------------');
+            // console.log(this.getRandomValue(this.enemySkills.length), 'log');
+            console.log(this.enemySkills, 'skills');
+            console.log(this.enemySkills.length, 'array lenght');
+            const skillLength = this.enemySkills.length;
+            eventBus.$emit('loading',true);
+            setTimeout(() => {
+                const skillId =  this.getRandomValue(skillLength);
+                console.log(this.enemySkills[skillId].name);
+                this.actionValue(this.enemySkills[skillId], false);
+                eventBus.$emit('loading',false);
+            }, 2000);
+
+
             
         },
-        lifeMinMax(value, maxValue){
+        getRandomNumber(value) {
+            // return random number 
+            // value = count of enemy skill
+            return Math.floor(Math.random() * Math.floor(value));
+        },
+        roundOffMinMaxValue(value, maxValue){
             return Math.min(Math.max(parseInt(value), 0), maxValue);
         },
         actionValue(move, isPlayer = true){
@@ -153,18 +224,71 @@ export default {
             // this.Character[charId].isAttacked = false;
             // this.Character[charId].isHealed = false;
             
-            if (move.target == "enemy"){
-                console.log('inside enemy');
+            if (move.target == "enemy") {
                 // this.Character[charReverseId].isAttacked =  true;
                 // this.Character[charReverseId].life = this.LifeMinMax(this.Character[charReverseId].life - move.damage);
                 // this.Character[charId].mana =  this.LifeMinMax(this.Character[charId].mana - move.manaCost);
-                this.enemy.stats.health = this.lifeMinMax(this.enemy.stats.health - move.damage, this.enemy.stats.maxHealth );
-                this.myPlayer.stats.mana = this.lifeMinMax(this.myPlayer.stats.mana - move.cost, this.myPlayer.stats.maxMana);
+                if (isPlayer) {
+                    // player move
+                    this.enemy.stats.health = this.roundOffMinMaxValue(this.enemy.stats.health - move.damage, this.enemy.stats.maxHealth );
+                    this.myPlayer.stats.mana = this.roundOffMinMaxValue(this.myPlayer.stats.mana - move.cost, this.myPlayer.stats.maxMana);
+
+                    this.ActionLogs.name = this.myPlayer.name;
+                    this.ActionLogs.action = move.name;
+
+                }
+                else {
+                    // enemy move
+                    this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
+                    this.enemy.stats.mana = this.roundOffMinMaxValue(this.enemy.stats.mana - move.cost, this.enemy.stats.maxMana);
+
+                    this.ActionLogs.name = this.enemyAction.name;
+                    this.ActionLogs.action = move.name;
+                }
                 
                 console.log(this.enemy.stats.health, 'this.enemy.health');
 
                 // this.ActionLogs.name = this.Character[charId].name;
                 // this.ActionLogs.action = move.name;
+            }
+            else if (move.target == "self"){
+                
+                // player move
+                if (isPlayer) {
+
+                    // rest
+                    if (move.type == "r"){
+                        this.myPlayer.stats.mana = this.roundOffMinMaxValue(this.myPlayer.stats.mana - move.damage, this.myPlayer.stats.maxMana);
+                    }
+                    // player skill with heal
+                    else {
+                        this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
+                    }
+
+                    
+                    this.ActionLogs.name = this.myPlayer.name;
+                    this.ActionLogs.action = move.name;
+
+                }
+                // enemy move
+                else {
+                    // rest
+                    if (move.type == "r"){
+                        this.enemy.stats.mana = this.roundOffMinMaxValue(this.enemy.stats.mana - move.damage, this.myPlayer.stats.maxMana);
+                        
+                    }
+                    // player skill with heal
+                    else {
+                        this.enemy.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
+                    }
+
+                    this.ActionLogs.name = this.enemy.name;
+                    this.ActionLogs.action = move.name;
+                }
+            }
+
+            if(isPlayer) {
+               this.enemyAction();
             }
 
             // if (move.MoveType == 2) {
@@ -200,6 +324,65 @@ export default {
         //         }
 
         //     }
+        },
+        determinefirstAttacker(){
+
+            this.isPlayerAttackFirst = Boolean(Number(this.getRandomValue(2)));
+            console.log(this.isPlayerAttackFirst);
+
+        },
+        getRandomValue(value) {
+            // return random number 
+            // value = count of enemy skill
+            return Math.floor(Math.random() * Math.floor(value));
+        },
+        dialogClose(){
+            // this.isGameBattle = false;
+            eventBus.$emit('isGameBattle', false);
+            this.$router.push(`/dungeon`);
+        }
+    },
+    computed: {
+        // firstAttack(){
+        //     return this.getRandomValue(2);            
+        // },
+        // getRandomValue(value) {
+        //     // return random number 
+        //     // value = count of enemy skill
+        //     return Math.floor(Math.random() * Math.floor(value));
+        // }
+    },
+    watch: {
+        isEnemyLoaded: function(){
+            // this.enemyAction();
+            this.determinefirstAttacker();
+
+            // determines if enemy will attack first
+            if(!this.isPlayerAttackFirst){
+                this.enemyAction();
+            }
+        },
+        enemy: {
+            handler: function(val){
+                // console.log(this.enemy.stats.health, 'enemy health');
+                if (this.enemy.stats.health == 0)
+                {
+                    this.$bvModal.show('modal-result');
+                    this.gameResult = 'You Win'
+                }
+            },
+            deep: true
+        },
+        myPlayer: {
+            handler: function(val){
+                // console.log(this.myPlayer.stats.health, 'my health');
+                if (this.myPlayer.stats.health == 0)
+                {
+                    this.$bvModal.show('modal-result');
+                    this.gameResult = 'You died'
+                }
+            },
+            deep: true
         }
     },
     created() {
@@ -208,14 +391,16 @@ export default {
         this.enterDungeonRequest.characterId = this.getCharacterId();
         this.enterDungeonRequest.dungeonId = this.$route.params.id;
 
-        console.log(this.enterDungeonRequest, 'enterDungeonRequest');
+        // console.log(this.enterDungeonRequest, 'enterDungeonRequest');
 
         // get enemies
-        this.getEnemyDetails(this.getEnemyDetails());
+        this.getEnemyDetails();
 
         // get character
         this.GetCharacterDetails(this.getCharacterId());
-    } 
+
+        this.determinefirstAttacker();
+    }
 
 }
 </script>
@@ -241,5 +426,9 @@ export default {
 
     .alertify .ajs-footer .ajs-buttons .ajs-button {
         color: white;
+    }
+
+    .modal-content {
+        background-color: rgba(23,67,88,0.5);
     }
 </style>

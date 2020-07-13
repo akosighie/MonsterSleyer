@@ -1,28 +1,27 @@
 <template>
-    <div role="tablist">
-         <b-button
-                            variant="info"
-                            size="sm"
-                           
-                            @click="$router.push('/')"
-                            >Character
-                        </b-button>
-                        <!--  :disabled="isDisabled" -->
-                        <b-button
-                            variant="info"
-                            size="sm"
-                            @click="$router.push(`/dungeon`)"
-                            >Dungeon
-                        </b-button>
-                        <!--  @click="$router.push(`/dungeon/${account.characterInfo.characterId}`)" -->
+    <div>
 
-                        <b-button
-                            variant="info"
-                            size="sm"
-                            @click="$router.push('/')"
-                            >Logout
-                        </b-button>
-
+   <b-row  align-h="end">
+    <b-col>
+      <b-button
+        variant="info"
+        size="sm"
+        @click="$router.push('/')"
+        style="float:right"
+      >Logout
+      </b-button>
+      
+      <b-button
+        variant="info"
+        size="sm"
+        @click="$router.push(`/dungeon`)"
+        style="float:right"
+        >Dungeon
+      </b-button>
+      
+    </b-col>    
+   </b-row>
+           
     <b-card no-body class="mb-1">
       <b-card-header header-tag="header" class="p-1" role="tab">
         <b-button block v-b-toggle.accordion-1 variant="info">Character Info</b-button>
@@ -177,6 +176,10 @@ export default {
     div {
         color: white;
         font-family: "OptimusPrinceps";
+    }
+
+    button {
+      margin: 0px 3px 1px 3px
     }
 
     .card {
