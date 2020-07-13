@@ -38,7 +38,11 @@
                 </dungeon-battle-moveset>
             </b-col>
             <b-col>
-                <!-- notification -->
+                <dungeon-battle-notification
+                    :gamelogData="ActionLogs"
+                    >
+
+                </dungeon-battle-notification>
             </b-col>
         </b-row>
 
@@ -71,12 +75,14 @@ import DungeonBattleCharacterVue from './Dungeon-Battle-Character.vue';
 import DungeonBattleMoveset from './Dungeon-Battle-Moveset';
 import characterService  from '../../mixins/characterService'; 
 import { characterClassMixin } from '../../mixins/characterClass';
+import DungeonBattleNotification from './Dundeon-Battle-Notification';
 
 export default {
     components: {
         'dungeon-battle-lifebar': DungeonBattleLifebar,
         'dungeon-battle-character': DungeonBattleCharacterVue,
-        'dungeon-battle-moveset': DungeonBattleMoveset
+        'dungeon-battle-moveset': DungeonBattleMoveset,
+        'dungeon-battle-notification': DungeonBattleNotification
     },
      data() {
       return {
@@ -105,6 +111,10 @@ export default {
         isEnemyLoaded: false,
         isPlayerAttackFirst: true,
         gameResult: '',
+        ActionLogs: { 
+          name: '',
+          action: ''
+        },
         baseSkills: [
             {
                 _id: 0,
@@ -184,9 +194,19 @@ export default {
         enemyAction(){
             // console.log(this.enemySkills.length, '-----------------------------------------');
             // console.log(this.getRandomValue(this.enemySkills.length), 'log');
-            const skillId =  this.getRandomValue(this.enemySkills.length);
-            console.log(this.enemySkills[skillId].name);
-            this.actionValue(this.enemySkills[skillId], false);
+            console.log(this.enemySkills, 'skills');
+            console.log(this.enemySkills.length, 'array lenght');
+            const skillLength = this.enemySkills.length;
+            eventBus.$emit('loading',true);
+            setTimeout(() => {
+                const skillId =  this.getRandomValue(skillLength);
+                console.log(this.enemySkills[skillId].name);
+                this.actionValue(this.enemySkills[skillId], false);
+                eventBus.$emit('loading',false);
+            }, 2000);
+
+
+            
         },
         getRandomNumber(value) {
             // return random number 
@@ -212,14 +232,18 @@ export default {
                     // player move
                     this.enemy.stats.health = this.roundOffMinMaxValue(this.enemy.stats.health - move.damage, this.enemy.stats.maxHealth );
                     this.myPlayer.stats.mana = this.roundOffMinMaxValue(this.myPlayer.stats.mana - move.cost, this.myPlayer.stats.maxMana);
+
+                    this.ActionLogs.name = this.myPlayer.name;
+                    this.ActionLogs.action = move.name;
+
                 }
                 else {
                     // enemy move
                     this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
                     this.enemy.stats.mana = this.roundOffMinMaxValue(this.enemy.stats.mana - move.cost, this.enemy.stats.maxMana);
 
-                    // this.enemy.stats.health = this.lifeMinMax(this.enemy.stats.health - move.damage, this.enemy.stats.maxHealth );
-                    // this.myPlayer.stats.mana = this.lifeMinMax(this.myPlayer.stats.mana - move.cost, this.myPlayer.stats.maxMana);
+                    this.ActionLogs.name = this.enemyAction.name;
+                    this.ActionLogs.action = move.name;
                 }
                 
                 console.log(this.enemy.stats.health, 'this.enemy.health');
@@ -241,17 +265,25 @@ export default {
                         this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
                     }
 
+                    
+                    this.ActionLogs.name = this.myPlayer.name;
+                    this.ActionLogs.action = move.name;
+
                 }
                 // enemy move
                 else {
                     // rest
                     if (move.type == "r"){
                         this.enemy.stats.mana = this.roundOffMinMaxValue(this.enemy.stats.mana - move.damage, this.myPlayer.stats.maxMana);
+                        
                     }
                     // player skill with heal
                     else {
-                        this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
+                        this.enemy.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health - move.damage, this.myPlayer.stats.maxHealth);
                     }
+
+                    this.ActionLogs.name = this.enemy.name;
+                    this.ActionLogs.action = move.name;
                 }
             }
 

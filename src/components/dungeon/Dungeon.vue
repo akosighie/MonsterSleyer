@@ -2,6 +2,7 @@
   <div>
       <b-row>
           <b-col cols="7">
+
             <b-carousel
               id="carousel-1"
                 v-model="dungeonValue"
@@ -23,6 +24,26 @@
               </b-carousel-slide>
 
             </b-carousel>
+            
+           
+    
+      <b-button
+        variant="info"
+        size="sm"
+        @click="$router.push('/')"
+        style="float:right"
+      >Logout
+      </b-button>
+      
+      <b-button
+        variant="info"
+        size="sm"
+        @click="gotoCharacter()"
+        style="float:right"
+        >Character
+      </b-button>
+      
+
           </b-col>
           <b-col cols="5">
            
@@ -110,6 +131,9 @@ export default {
                 eventBus.$emit('loading', false);
                 this.$router.push(`/unauthorized`);
             });
+        },
+        gotoCharacter(){
+          this.$router.push(`/character/${this.getAccountId()}`);
         }
     },
     computed: {
@@ -129,5 +153,9 @@ export default {
     div {
         color: white;
         font-family: "OptimusPrinceps";
+    }
+
+    button {
+      margin: 1px 1px 1px 1px;
     }
 </style>
