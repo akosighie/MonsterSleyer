@@ -55,18 +55,18 @@
 
     <b-card no-body class="mb-1">
       <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-button block v-b-toggle.accordion-3 variant="info">Inventory</b-button>
+        <b-button block v-b-toggle.accordion-3 variant="info">Equipment</b-button>
       </b-card-header>
       <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
         <b-card-body>
           <!-- <b-card-text>{{ text }}</b-card-text> -->
           <character-inventory
-            :equipment="account.equipments">
+            :equipment="account.equipments"
+            :storageItems="storageItems">
           </character-inventory>
         </b-card-body>
       </b-collapse>
     </b-card>
-
     <b-card no-body class="mb-1">
       <b-card-header header-tag="header" class="p-1" role="tab">
         <b-button block v-b-toggle.accordion-4 variant="info">Skills</b-button>
@@ -92,6 +92,7 @@ import CharacterSkill from './Character-Skill';
 import CharacterStats from './Character-Stats';
 import CharacterInfo from './Character-Info';
 import CharacterInventory from './Character-Inventory';
+import CharacterService from '../../mixins/characterService';
 import localStorageHelper from '../../mixins/localStorageHelper';
 
 export default {
@@ -99,7 +100,7 @@ export default {
         'character-skill': CharacterSkill,
         'character-stats': CharacterStats,
         'character-info': CharacterInfo,
-        'character-inventory': CharacterInventory
+        'character-inventory': CharacterInventory,
     },
     data() {
         return {
@@ -122,10 +123,11 @@ export default {
                   weapon: ''
                 },
                 skills: ''
-            }
+            },
+            storageItems:[]
         }
     },
-    mixins: [accountService, localStorageHelper],
+    mixins: [accountService, localStorageHelper, CharacterService],
     methods: {
         CheckAccountId(id){
             this.getCharacterDetails(id).then(res => {
@@ -154,9 +156,24 @@ export default {
                 // skills
                 this.account.skills = res.skills;
 
+                this.GetCharacterInventory(this.account.characterInfo.characterId);
+
                 this.$emit('player-info', res);
             })
             .catch(error => {
+                console.log(error, 'error');
+                const errorObj = error.bodyText;
+                this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
+                eventBus.$emit('loading',false);
+                this.$router.push(`/unauthorized`);
+            });
+           
+        },
+        GetCharacterInventory(characterId){
+
+            this.getCharacterInventory(this.account.characterInfo.characterId).then(res => {
+              this.storageItems = res
+            }).catch(error => {
                 console.log(error, 'error');
                 const errorObj = error.bodyText;
                 this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 

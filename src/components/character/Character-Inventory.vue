@@ -23,17 +23,52 @@
                         {{equipment.weapon}}
                     </b-col>
                 </b-row>
+                <b-row>
+                   <b-button id="show-btn" @click="showmodal">Open Inventory</b-button>
+                </b-row>
             </b-col>
             <b-col cols="8">
                 
             </b-col>
         </b-row>
+
+        <b-modal
+        title="Choose Equipments" 
+        ref="my-modal" 
+        hide-footer  
+        size="xl" 
+        no-close-on-backdrop
+        :header-bg-variant="headerBgVariant"
+        :body-bg-variant="bodyBgVariant">
+      <div class="d-block text-center">
+        <character-storage
+            :equipments="storageItems">
+          </character-storage>
+      </div>
+    </b-modal>
     </div>
 </template>
 <script>
+import CharacterStorage from './Character-Storage';
+
 export default {
+      components: {
+        'character-storage':CharacterStorage
+    },
+    data(){
+        return{
+             bodyBgVariant: 'secondary',
+             headerBgVariant: 'dark',
+        }
+    },
     props: {
-        equipment: {}
+        equipment: {},
+        storageItems: Array
+    },
+    methods:{
+        showmodal(){
+            this.$refs['my-modal'].show();
+        }
     }
 }
 </script>

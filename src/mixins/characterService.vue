@@ -14,7 +14,12 @@ export default {
              return this.$http.get(`${apiUrl}${service}/${characterId}`).then(
                 res => res.json()
             );
-        }
+        },
+         getCharacterInventory(characterId){
+            return this.$http.get(`${apiUrl}${service}/${characterId}/inventory`).then(
+                res => res.json()
+            );
+        },
         // getCharacterDetails(accountId){
         //     return this.$http.get(`${apiUrl}accounts/${accountId}/character`).then(
         //         res => res.json()

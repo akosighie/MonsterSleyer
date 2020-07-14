@@ -1,4 +1,5 @@
 import Home from './components/Home.vue';
+// import PageNotFound from './components/notfound/PageNotFound.vue';
 import UserRoutes from './components/user/user.route';
 import AuthRoutes from './components/auth/auth.route';
 import CharacterRoutes from './components/character/character.route';
@@ -8,7 +9,11 @@ export const routes = [
     {
         path: '/',
         component: Home
-    }
+    },
+    // {
+    //     path: '*',
+    //     component: PageNotFound
+    // }
 ];
 
 routes.push(...DungeonRoutes);
