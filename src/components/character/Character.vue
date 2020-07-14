@@ -129,8 +129,7 @@ export default {
     methods: {
         CheckAccountId(id){
             this.getCharacterDetails(id).then(res => {
-                console.log(res, 'getaccount');
-
+                
                 // charinfo
                 this.account.characterInfo.accountId = res.accountId;
                 this.account.characterInfo.characterId = res._id;
@@ -157,7 +156,6 @@ export default {
                 this.$emit('player-info', res);
             })
             .catch(error => {
-                console.log(error, 'error');
                 const errorObj = error.bodyText;
                 this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                 eventBus.$emit('loading',false);

@@ -46,8 +46,6 @@ export default {
             return ` target: ${skill.target} | Damage: ${skill.damage} | Mana Cost: ${skill.cost}`;
         },
         playerAction(skill){
-                console.log(skill, 'skill');
-                // this.$emit('enemyTurn-value', true);
                 this.$emit('pass-value', skill);
         },
         confirm() {
