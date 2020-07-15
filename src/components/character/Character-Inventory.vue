@@ -12,7 +12,7 @@
                         Armor
                     </b-col>
                     <b-col>
-                        {{equipment.armor}}
+                        {{equipment.armor.name}}
                     </b-col>
                 </b-row>
                 <b-row>
@@ -20,7 +20,7 @@
                         Weapon
                     </b-col>
                     <b-col>
-                        {{equipment.weapon}}
+                        {{equipment.weapon.name}}
                     </b-col>
                 </b-row>
                 <b-row>
@@ -36,13 +36,14 @@
         title="Choose Equipments" 
         ref="my-modal" 
         hide-footer  
-        size="xl" 
+        size="lg" 
         no-close-on-backdrop
         :header-bg-variant="headerBgVariant"
         :body-bg-variant="bodyBgVariant">
       <div class="d-block text-center">
         <character-storage
-            :equipments="storageItems">
+            :equipments="storageItems"
+            :currentEquipment="equipment">
           </character-storage>
       </div>
     </b-modal>

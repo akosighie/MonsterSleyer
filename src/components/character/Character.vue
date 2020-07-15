@@ -61,7 +61,7 @@
         <b-card-body>
           <!-- <b-card-text>{{ text }}</b-card-text> -->
           <character-inventory
-            :equipment="account.equipments"
+            :equipment="equipments"
             :storageItems="storageItems">
           </character-inventory>
         </b-card-body>
@@ -124,7 +124,8 @@ export default {
                 },
                 skills: ''
             },
-            storageItems:[]
+            storageItems:[],
+            equipments:{}
         }
     },
     mixins: [accountService, localStorageHelper, CharacterService],
@@ -152,7 +153,8 @@ export default {
                 // inventory
                 this.account.equipments.armor = res.equipment.armor.name;
                 this.account.equipments.weapon = res.equipment.weapon.name;
-
+                this.equipments = res.equipment;
+              
                 // skills
                 this.account.skills = res.skills;
 
