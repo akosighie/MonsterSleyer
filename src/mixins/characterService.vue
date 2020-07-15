@@ -20,6 +20,14 @@ export default {
                 res => res.json()
             );
         },
+        updateCharacterEquipment(characterId, equipments){
+
+             console.log(characterId);
+              console.log(equipments);
+
+             return this.$http.put(`${apiUrl}${service}/${characterId}/equipment`, equipments).then(res => res);
+
+        }
         // getCharacterDetails(accountId){
         //     return this.$http.get(`${apiUrl}accounts/${accountId}/character`).then(
         //         res => res.json()

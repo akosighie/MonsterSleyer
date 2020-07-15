@@ -11,7 +11,7 @@
                       <b-col style="text-align:left"> 
                        <ul v-for="equip in equipments" :key="equip.name">
                            <li v-if="equip.item.type=='AMR'">
-                             <b-link class="blink" @click.prevent="showSelected(equip.item)"> {{equip.item.name}}</b-link>  
+                             <b-link class="blink" @click.prevent="chosenEquipment(equip.item)"> {{equip.item.name}}</b-link>  
                                </li>
                                    </ul>
                     </b-col>
@@ -26,7 +26,7 @@
                       <b-col>
                         <ul v-for="equip in equipments" :key="equip.name" >
                            <li v-if="equip.item.type=='WPN'">
-                                <b-link class="blink" @click.prevent="showSelected(equip.item)">{{equip.item.name}}</b-link>  
+                                <b-link class="blink" @click.prevent="chosenEquipment(equip.item)">{{equip.item.name}}</b-link>  
                                </li>
                                    </ul>
                     </b-col>
@@ -76,9 +76,12 @@
                      </b-col>
                 </b-row>
                 <hr>
-                <b-row>
-                    <b-button size="sm" variant="light">Eqiup</b-button>
-                     <b-button size="sm" variant="light">Save</b-button>
+                <b-row v-if="selectedEquipment.bonus">
+                    <b-button size="sm" variant="light" :disabled="notSuitableClass" @click.prevent="equipSelectedEquipment()">Equip</b-button>
+                     <b-button size="sm" variant="light" :disabled="notSuitableClass" @click.prevent="saveEquipments()">Save</b-button>
+                </b-row>
+                 <b-row >
+                   <p v-show="notSuitableClass">The selected equipment is not suitable for class</p>
                 </b-row>
                 </div>
             </b-col>
@@ -86,25 +89,29 @@
     </div>
 </template>
 <script>
+import CharacterService from '../../mixins/characterService';
+
 export default {
     data(){
             return{
                         selectedEquipment:{},
-                        currentEquip:{}
+                        currentEquip:{},
+                        notSuitableClass:false                       
+
             }
     },
     props: {
         equipments: Array,
-        currentEquipment:{}
+        currentEquipment:{},
+        characterInfo:{}
 
     },
+    mixins: [CharacterService],
     methods:{
-        showSelected(equipment){
-            this.selectedEquipment = equipment;
-             console.log(this.equipments);
-            console.log(this.selectedEquipment);
-            console.log(this.currentEquipment);
+        chosenEquipment(equipment){
+            console.log(this.characterInfo);
 
+            this.selectedEquipment = equipment;
            if(this.selectedEquipment.type == 'AMR')
            {
                this.currentEquip = this.currentEquipment.armor
@@ -117,6 +124,31 @@ export default {
            {
                this.currentEquip = {};
            }
+
+           
+            this.notSuitableClass = this.characterInfo.classType == this.selectedEquipment.classId ? false : true
+        },
+        equipSelectedEquipment(){
+
+
+            this.currentEquip = this.selectedEquipment;
+
+            console.log(this.currentEquip);
+
+        },
+        saveEquipments(){
+
+            let equipmentRequest = {}
+
+              if(this.currentEquip.type == 'AMR'){
+                  equipmentRequest.armorId = this.currentEquip._id
+                  }
+                else{
+                    equipmentRequest.weaponId = this.currentEquip._id
+                    }
+                this.updateCharacterEquipment(this.characterInfo.characterId, equipmentRequest).then(resp=>{
+                    console.log(resp);
+                });
         }
     }
 }

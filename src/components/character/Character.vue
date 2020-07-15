@@ -62,7 +62,8 @@
           <!-- <b-card-text>{{ text }}</b-card-text> -->
           <character-inventory
             :equipment="equipments"
-            :storageItems="storageItems">
+            :storageItems="storageItems"
+            :characterInfo="account.characterInfo">
           </character-inventory>
         </b-card-body>
       </b-collapse>
@@ -165,6 +166,7 @@ export default {
             .catch(error => {
                 console.log(error, 'error');
                 const errorObj = error.bodyText;
+                console.log(error);
                 this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                 eventBus.$emit('loading',false);
                 this.$router.push(`/unauthorized`);

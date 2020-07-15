@@ -11,7 +11,7 @@
                     <b-col>
                         Armor
                     </b-col>
-                    <b-col>
+                    <b-col v-if="equipment.armor">
                         {{equipment.armor.name}}
                     </b-col>
                 </b-row>
@@ -19,7 +19,7 @@
                     <b-col>
                         Weapon
                     </b-col>
-                    <b-col>
+                    <b-col v-if="equipment.armor">
                         {{equipment.weapon.name}}
                     </b-col>
                 </b-row>
@@ -43,7 +43,8 @@
       <div class="d-block text-center">
         <character-storage
             :equipments="storageItems"
-            :currentEquipment="equipment">
+            :currentEquipment="equipment"
+            :characterInfo="characterInfo">
           </character-storage>
       </div>
     </b-modal>
@@ -64,7 +65,8 @@ export default {
     },
     props: {
         equipment: {},
-        storageItems: Array
+        storageItems: Array,
+        characterInfo:{}
     },
     methods:{
         showmodal(){
