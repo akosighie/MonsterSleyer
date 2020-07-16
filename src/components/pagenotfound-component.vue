@@ -13,5 +13,6 @@ export default {
 <style scoped>
 h3{
     color: white
+    
 }
 </style>

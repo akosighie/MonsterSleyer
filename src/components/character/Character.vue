@@ -76,7 +76,8 @@
         <b-card-body>
           <!-- <b-card-text>{{ text }}</b-card-text> -->
           <character-skill
-            :skills="account.skills">
+            :skills="account.skills"
+            :characterInfo="account.characterInfo">
           </character-skill>
           <!-- {{account.skills}} -->
         </b-card-body>
