@@ -68,3 +68,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+  .modal-content {
+        background-color: rgba(23,67,88,0.5);
+  }
+</style>

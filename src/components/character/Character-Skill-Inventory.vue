@@ -66,12 +66,12 @@ import CharacterService from '../../mixins/characterService';
 
 export default {
     data(){
-            return{
-                        selectedSkill:{},
-                        skillAlreadyEquip:false,
-                        listOfSkills:[]                      
-
-            }
+        return{
+            selectedSkill:{},
+            skillAlreadyEquip:false,
+            listOfSkills:[],
+            skillIdList: []                      
+        }
     },
     props: {
         currentSkills:{},
@@ -95,10 +95,13 @@ export default {
             this.currentSkills.push(this.selectedSkill);
         },
         saveSkills(){
-
-                 this.updateCharacterSkills(this.characterInfo.characterId, this.currentSkills).then(resp=>{
-                    console.log(resp);
-                });
+            for (var skill of this.currentSkills) {
+                this.skillIdList.push(skill._id);
+            }
+                
+            this.updateCharacterSkills(this.characterInfo.characterId, this.skillIdList).then(resp=>{
+                console.log(resp);
+            });
         },
         removeSkill(skill){
 

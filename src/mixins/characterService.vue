@@ -21,19 +21,17 @@ export default {
             );
         },
         updateCharacterEquipment(characterId, equipments){
-             return this.$http.put(`${apiUrl}${service}/${characterId}/equipment`, equipments).then(res => res);
+            return this.$http.put(`${apiUrl}${service}/${characterId}/equipment`, equipments).then(res => res);
 
         },
-          getCharacterListOfSkills(characterId){
+        getCharacterListOfSkills(characterId){
             return this.$http.get(`${apiUrl}${service}/${characterId}/skills`).then(
                 res => res.json()
             );
-
-          },
+        },
           updateCharacterSkills(characterId, skills){
-              console.log(skills);
-             return this.$http.put(`${apiUrl}${service}/${characterId}/skills`, skills).then(res => res);
-
+            console.log(skills);
+            return this.$http.put(`${apiUrl}${service}/${characterId}/skills`, skills).then(res => res);
         },
           
             
