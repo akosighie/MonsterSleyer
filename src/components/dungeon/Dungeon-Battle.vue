@@ -61,6 +61,7 @@
             </template>
             <div class="d-block text-center">
             <h3>{{gameResult}}</h3>
+            {{enemy.id}}
             </div>
             <b-button class="mt-3" block @click="dialogClose()">Close Me</b-button>
         </b-modal>
@@ -94,6 +95,11 @@ export default {
         enterDungeonRequest: {
             characterId: '',
             dungeonId: ''
+        },
+        battleDungeonResult: {
+            dungeonId: '',
+            enemyId: '',
+            characterId: ''
         },
         dungeon: {},
         enemy: {
@@ -170,7 +176,7 @@ export default {
                 
                 this.myPlayer.equipments = res.equipment;
                 this.playerSkills = this.baseSkills.concat(res.skills);
-                console.log(res.equipment, 'character result');
+                console.log(res, 'character result');
                 console.log(this.myPlayer.equipments, 'character result');
 
                 // equipment 
@@ -211,7 +217,7 @@ export default {
                 this.enemySkills = this.baseSkills.concat(res.enemy.skills);
                 this.isEnemyLoaded = true;
                  //this.enemyAction();
-                // console.log(this.enemySkills, 'res.enemy.skills');
+                 console.log(res, 'enemy details');
                 
                 // console.log(this.dungeon , 'dungeon');
                 eventBus.$emit('loading',false);
