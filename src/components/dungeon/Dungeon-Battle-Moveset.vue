@@ -26,7 +26,9 @@
                         >
                         Give Up
                 </b-button>
-              
+
+                <!-- {{equipments.armor.bonus}}
+                {{equipments.weapon.bonus}} -->
                 
 
             </b-row>
@@ -39,7 +41,8 @@ import { eventBus } from '../../main';
 export default {
     props: {
         skills: {},
-        playerMana: 0
+        playerMana: 0,
+        equipments: {}
     },
     methods: {
         toolTipName(skill){
