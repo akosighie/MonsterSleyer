@@ -8,8 +8,8 @@ export default {
                 res => res.json()
             );
         },
-        postDungeonBattle(dungeonBattleRequest){
-            return this.$$http.pos(`${apiUrl}dungeons/battle`, dungeonBattleRequest).then(
+        postDungeonBattle(battleDungeonResult){
+            return this.$http.post(`${apiUrl}dungeons/battle`, battleDungeonResult).then(
                 res => res.json()
             );
         }

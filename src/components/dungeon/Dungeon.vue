@@ -64,6 +64,9 @@
                 <b-col>
                   Recommended Level
                 </b-col>
+                <b-col>
+                  {{this.dungeons[dungeonValue].recommendedLevel}}
+                </b-col>
               </b-row>
 
               <b-row>
@@ -124,6 +127,7 @@ export default {
         CheckCharacterId(id){
             this.getCharacterDungeons(id).then(res => {
                 this.dungeons = res;
+                console.log(this.dungeons, 'dungeons');
                 eventBus.$emit('loading', false);
             })
             .catch(error => {
