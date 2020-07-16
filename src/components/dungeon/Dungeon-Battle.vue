@@ -184,6 +184,8 @@ export default {
         gameResult: '',
         isGameOver: false,
         isPlayerWin: false,
+        skillId: 0,
+        skillLength: 0,
         ActionLogs: { 
           name: '',
           notificationType: 0, //0 - game notification, 1 - battle notification
@@ -249,7 +251,7 @@ export default {
                 eventBus.$emit('loading', false);
             })
             .catch(error => {
-                console.log(error, 'error');
+                console.log(error, 'error 5');
                 const errorObj = error.bodyText;
                 this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                 eventBus.$emit('loading', false);
@@ -282,7 +284,8 @@ export default {
                 eventBus.$emit('dungeonImage', this.dungeon.image);
             })
             .catch(error => {
-                    console.log(error, 'error');
+                    console.log(error, 'error 2');
+                    this.$router.push(`/unauthorized`);
                     const errorObj = error.bodyText;
                     this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                     eventBus.$emit('loading',false);
@@ -290,18 +293,33 @@ export default {
             });
         },
         enemyAction(){
-            const skillLength = this.enemySkills.length;
+            this.skillLength = this.enemySkills.length;
             // eventBus.$emit('loading',true);
            this.IsEnemyTurn = true;
                     
             setTimeout(() => {
                 if (!this.isGameOver) {
-                    const skillId =  this.getRandomValue(skillLength);
-                    console.log(this.enemySkills[skillId], 'enemy attack');
-                    this.actionValue(this.enemySkills[skillId], false);
-                    this.IsEnemyTurn = false;
+                    this.skillId =  this.getRandomValue(this.skillLength);
+                    this.enemyManaChecker();
+                    // console.log(this.enemySkills[this.skillId], 'enemy attack');
+                    // this.actionValue(this.enemySkills[this.skillId], false);
+                    //this.IsEnemyTurn = false;
                 }
             }, 4000);
+        },
+        enemyManaChecker() {
+            console.log(this.enemy.stats.mana, 'this.enemy.stats.mana');
+            console.log(this.enemySkills[this.skillId].cost, 'this.enemySkills[this.skillId].cost');
+            if (this.enemy.stats.mana > this.enemySkills[this.skillId].cost) {
+                console.log('mana okay');
+                 this.actionValue(this.enemySkills[this.skillId], false);
+                 this.IsEnemyTurn = false;
+            }
+            else {
+                console.log('recheck again');
+                this.skillId =  this.getRandomValue(this.skillLength);
+                this.enemyManaChecker(this.skillId);
+            }
         },
         getRandomNumber(value) {
             // return random number 
@@ -340,9 +358,10 @@ export default {
                 }
                 else {
                     // enemy move    
-                    if (move.type = "P"){
+                    if (move.type = "P"){ 
                         // physical attack
                         totalDamage = parseInt(move.damage) + parseInt(this.enemy.stats.off);
+                        console.log(totalDamage, 'enemy total damage');
                         this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health + this.myPlayer.stats.def + this.myPlayer.equipmentBonus.def - totalDamage, this.myPlayer.stats.maxHealth);
                     }
                     else {
@@ -448,7 +467,7 @@ export default {
                 eventBus.$emit('loading',false);
             })
             .catch(error => {
-                    console.log(error, 'error');
+                    console.log(error, 'error 3');
                     const errorObj = error.bodyText;
                     this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                     eventBus.$emit('loading',false);

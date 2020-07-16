@@ -61,6 +61,7 @@
               <br>
 
               <b-row>
+                <!-- {{this.dungeons[dungeonValue]}} -->
                 <b-col>
                   Recommended Level
                 </b-col>
@@ -69,13 +70,22 @@
                 </b-col>
               </b-row>
 
-              <b-row>
+              <b-row v-if="dungeonValue > 0">
+                <b-col>
+                  Requirements:
+                </b-col>
+                 <b-col>
+                  Defeat {{this.dungeons[dungeonValue].bossReq.name}} 
+                </b-col>
+              </b-row>
+
+              <b-row v-show="!this.dungeons[dungeonValue].locked">
                 <b-col>
                   Encounters/Boss
                 </b-col>
               </b-row>
 
-              <b-row>
+              <b-row v-show="!this.dungeons[dungeonValue].locked">
                 <dungeon-enemies
                     :dungeon="this.dungeons[dungeonValue].enemies"
                 > 
