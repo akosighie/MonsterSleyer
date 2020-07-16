@@ -110,6 +110,43 @@ export default {
         top: 181px;
     }
 
+    .ogrim {
+        position: relative;
+        height: 473px;
+        top: 40px;
+        left: 58px;
+    }
+
+    .hobgoblin {
+        position: relative;
+        height: 331px;
+        top: 154px;
+        left: 181px;
+    }
+
+    .goblin-shaman {
+        position: relative;
+        height: 200px;
+        top: 244px;
+        left: 205px;
+    }
+
+    .goblin-warlord {
+        position: relative;
+        height: 331px;
+        top: 120px;
+        left: 83px;
+    }
+
+    .goblin {
+        position: relative;
+        height: 385px;
+        top: 82px;
+        left: 163px;
+    }
+
+
+
     .archer {
         position: relative;
         height: 274px;
