@@ -109,9 +109,9 @@ export default {
     mixins: [CharacterService],
     methods:{
         chosenEquipment(equipment){
-            console.log(this.characterInfo);
 
             this.selectedEquipment = equipment;
+
            if(this.selectedEquipment.type == 'AMR')
            {
                this.currentEquip = this.currentEquipment.armor
@@ -125,28 +125,30 @@ export default {
                this.currentEquip = {};
            }
 
-           
             this.notSuitableClass = this.characterInfo.classType == this.selectedEquipment.classId ? false : true
         },
         equipSelectedEquipment(){
-
-
             this.currentEquip = this.selectedEquipment;
-
-            console.log(this.currentEquip);
-
         },
         saveEquipments(){
 
-            let equipmentRequest = {}
+        if(this.currentEquip.type == 'AMR')
+           {
+               this.currentEquipment.armor = this.currentEquip
+           }          
+           else
+           {
+               this.currentEquipment.weapon = this.currentEquip
+           }
 
-              if(this.currentEquip.type == 'AMR'){
-                  equipmentRequest.armorId = this.currentEquip._id
-                  }
-                else{
-                    equipmentRequest.weaponId = this.currentEquip._id
-                    }
-                this.updateCharacterEquipment(this.characterInfo.characterId, equipmentRequest).then(resp=>{
+             console.log( this.currentEquipment);
+            
+          
+            let equipmentRequest = {};
+            equipmentRequest.armorId = this.currentEquipment.armor._id;
+            equipmentRequest.weaponId = this.currentEquipment.weapon._id
+
+            this.updateCharacterEquipment(this.characterInfo.characterId, equipmentRequest).then(resp=>{
                     console.log(resp);
                 });
         }
