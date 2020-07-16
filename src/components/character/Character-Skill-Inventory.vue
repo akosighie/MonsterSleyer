@@ -13,7 +13,7 @@
                            <li>
                                 <b-link class="blink" @click.prevent="chosenSkill(skill)">{{skill.name}}</b-link>  
                                </li>
-                                   </ul>
+                               </ul>
                     </b-col>
                 </b-row>
             </b-col>
@@ -55,6 +55,7 @@
                 </b-row>
                  <b-row >
                    <p v-show="skillAlreadyEquip">The selected skill is already equiped!</p>
+                    <p v-show="successUpdate">Skills successfully updated!</p>
                 </b-row>
                 </div>
             </b-col>
@@ -70,7 +71,8 @@ export default {
             selectedSkill:{},
             skillAlreadyEquip:false,
             listOfSkills:[],
-            skillIdList: []                      
+            skillIdList: [],
+            successUpdate:false                      
         }
     },
     props: {
@@ -81,17 +83,15 @@ export default {
     mixins: [CharacterService],
     methods:{
         chosenSkill(skill){
-  //console.log(skill)
+
              this.selectedSkill = skill;
               var valObj = this.currentSkills.filter(function(obj){
                   if(obj.name == skill.name) return obj.name;
                   });
                   
                   this.skillAlreadyEquip = valObj.length > 0 ? true: false;
-                  console.log(valObj.length);
         },
         equipSelectedSkill(){
-
             this.currentSkills.push(this.selectedSkill);
         },
         saveSkills(){
@@ -100,25 +100,23 @@ export default {
             }
                 
             this.updateCharacterSkills(this.characterInfo.characterId, this.skillIdList).then(resp=>{
-                console.log(resp);
+
+                 this.successUpdate = resp.status == 200 ? true:false;
+
+                 setTimeout(() => {
+                     this.successUpdate = false;
+                     }, 5000);
             });
         },
-        removeSkill(skill){
-
-            
+        removeSkill(skill){            
             let index = this.currentSkills.findIndex(obj => obj === skill);
-            console.log(index);
-
             this.currentSkills.splice(index, 1);
-
-            console.log(this.currentSkills);
         }
     },
     created(){
-        console.log(this.currentSkills);
+
         this.getCharacterListOfSkills(this.characterInfo.characterId).then(res => {
             this.listOfSkills = res;
-                console.log(res);
         }).catch(error => {
                 console.log(error, 'error');
                 const errorObj = error.bodyText;
@@ -136,16 +134,16 @@ ul {
     list-style-type: none;
 }
 li {
-       width: 33%;
-  float: left;
-  list-style: none;
-   text-decoration: none;
+    width: 33%;
+    float: left;
+    list-style: none;
+    text-decoration: none;
 }
 
 .curSkill{
-       width: 100%;
-  list-style: none;
-   text-decoration: none;
+    width: 100%;
+     list-style: none;
+     text-decoration: none;
 }
 
 .blink{

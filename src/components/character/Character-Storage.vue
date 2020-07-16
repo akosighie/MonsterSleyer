@@ -82,6 +82,7 @@
                 </b-row>
                  <b-row >
                    <p v-show="notSuitableClass">The selected equipment is not suitable for class</p>
+                    <p v-show="successUpdate">Equipment successfully updated!</p>
                 </b-row>
                 </div>
             </b-col>
@@ -96,7 +97,8 @@ export default {
             return{
                         selectedEquipment:{},
                         currentEquip:{},
-                        notSuitableClass:false                       
+                        notSuitableClass:false,
+                        successUpdate:false,                       
 
             }
     },
@@ -141,16 +143,24 @@ export default {
                this.currentEquipment.weapon = this.currentEquip
            }
 
-             console.log( this.currentEquipment);
-            
-          
             let equipmentRequest = {};
             equipmentRequest.armorId = this.currentEquipment.armor._id;
             equipmentRequest.weaponId = this.currentEquipment.weapon._id
 
             this.updateCharacterEquipment(this.characterInfo.characterId, equipmentRequest).then(resp=>{
-                    console.log(resp);
-                });
+                       this.successUpdate = resp.status == 200 ? true:false;
+
+                        setTimeout(() => {
+                                     this.successUpdate = false;
+                                    }, 5000);
+                   
+                }).catch(error => {
+                console.log(error, 'error');
+                const errorObj = error.bodyText;
+                this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
+                eventBus.$emit('loading',false);
+                this.$router.push(`/unauthorized`);
+            });
         }
     }
 }
