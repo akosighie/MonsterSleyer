@@ -26,7 +26,9 @@
                         >
                         Give Up
                 </b-button>
-              
+
+                <!-- {{equipments.armor.bonus}}
+                {{equipments.weapon.bonus}} -->
                 
 
             </b-row>
@@ -39,15 +41,14 @@ import { eventBus } from '../../main';
 export default {
     props: {
         skills: {},
-        playerMana: 0
+        playerMana: 0,
+        equipments: {}
     },
     methods: {
         toolTipName(skill){
             return ` target: ${skill.target} | Damage: ${skill.damage} | Mana Cost: ${skill.cost}`;
         },
         playerAction(skill){
-                console.log(skill, 'skill');
-                // this.$emit('enemyTurn-value', true);
                 this.$emit('pass-value', skill);
         },
         confirm() {

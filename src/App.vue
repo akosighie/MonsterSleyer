@@ -7,9 +7,12 @@
                
             <loading 
                 :active.sync="isLoading" 
-                :is-full-page="fullPage">
+                :is-full-page="fullPage"
+                loader="bars"
+                
+                >
             </loading>
-
+            <!-- opacity="0.8" -->
             <h1 v-show="!isGameBattle">
                 Monster Slayer
             </h1>

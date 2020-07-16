@@ -14,17 +14,19 @@
                 style="text-shadow: 1px 1px 2px #333 height: 500px !important;"
                 :interval="intervalValue"
               >
+              
               <b-carousel-slide
                 v-for="(dng, i) in this.dungeons"
                 v-bind:key="i" 
                 :caption="dng.name"
-                text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+                
                 :img-src="GetDungeonImageUrl(dungeonValue)"
               >
+              <!-- :text="setText(dng)"-->
               </b-carousel-slide>
-
+              <!-- {{this.dungeons}} -->
             </b-carousel>
-            
+            <!-- {{this.dungeons[0].locked}} -->
            
     
       <b-button
@@ -51,8 +53,9 @@
                 block 
                 variant="info"
                 size="lg"
+                :disabled="this.dungeons[dungeonValue].locked"
                 @click="$router.push(`/dungeon/${dugeonId}`)"
-                >Enter
+                >{{buttonTextDesc(this.dungeons[dungeonValue].locked)}}
               </b-button>
 
               <br>
@@ -106,6 +109,7 @@ export default {
         ],
         intervalValue: 0,
         dungeonValue: 0,
+        isDungeonLocked: true
 
       }
     },
@@ -118,9 +122,7 @@ export default {
             this.sliding = false
         },
         CheckCharacterId(id){
-          console.log(id, 'localstoraagecharid');
             this.getCharacterDungeons(id).then(res => {
-                console.log(res, 'getDungeons');
                 this.dungeons = res;
                 eventBus.$emit('loading', false);
             })
@@ -134,6 +136,9 @@ export default {
         },
         gotoCharacter(){
           this.$router.push(`/character/${this.getAccountId()}`);
+        },
+        buttonTextDesc(isLocked) {
+          return (isLocked ? 'Unavailable' : 'Enter');
         }
     },
     computed: {

@@ -249,15 +249,12 @@ export default {
     setLocalStorage(){
       
       if(this.isplayerAccountHasValue()){
-        console.log('getItem');
         let _player = JSON.parse(localStorage.getItem("playerAccount"));
-        console.log(_player);
         this.playerAccount.characterName = _player.characterName;
         this.playerAccount.classType = _player.classType;
         
       }
       else {
-        console.log('setItem');
         localStorage.setItem("playerAccount", JSON.stringify(this.playerAccount));
         this.hasplayerAccount = true;
       }
@@ -283,7 +280,6 @@ export default {
       this.GameResult = '';
     },
     setAccountInfo(accountInfo){
-      console.log(accountInfo, 'accountInfo');
       this.playerAccount.characterName = accountInfo.name;
       this.playerAccount.classType = accountInfo.classType;
 
