@@ -61,9 +61,57 @@
             </template>
             <div class="d-block text-center">
             <h3>{{gameResult}}</h3>
-            {{enemy.id}}
+            <b-row v-show="battleResult.lvlUp && isPlayerWin">
+                <b-col>
+                    <h4>Level Up!</h4> 
+                </b-col>
+            </b-row>
+            <!-- {{ isEmpty(battleResult.drop)}} -->
+            <b-row v-show="isPlayerWin && !isEmpty(battleResult.drop) "  >
+                <b-col>
+                    Drop
+                </b-col>
+                <b-col>
+                    {{battleResult.drop}}
+                </b-col>
+            </b-row>
+            <b-row v-show="isPlayerWin">
+                <b-col>
+                    Experience: 
+                </b-col>
+                <b-col>
+                    {{battleResult.exp}}
+                </b-col>
+            </b-row>
+            <!-- {{battleResult}} -->
+            <b-row v-show="isPlayerWin && !isEmpty(battleResult.newSkills)">
+                <b-col>
+                   New skill 
+                </b-col>
+                <b-col>
+                    {{battleResult.newSkills}}
+                </b-col>
+            </b-row>
+            <b-row v-show="isPlayerWin && !isEmpty(battleResult.unlockedDungeons)">
+                <b-col>
+                    Unlocked Dungeon
+                </b-col>
+                <b-col>
+                    {{battleResult.unlockedDungeons}}
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <b-button class="mt-3" block @click="reEnterDungeon()">Re-Enter Dungeon</b-button>
+                </b-col>
+                <b-col>
+                    <b-button class="mt-3" block @click="dialogClose()">Close</b-button>
+                </b-col>
+            </b-row>
             </div>
-            <b-button class="mt-3" block @click="dialogClose()">Close Me</b-button>
+            
+         
+
         </b-modal>
 
         </b-container>
@@ -101,6 +149,7 @@ export default {
             enemyId: '',
             characterId: ''
         },
+        battleResult: {},
         dungeon: {},
         enemy: {
             name: '',
@@ -134,6 +183,7 @@ export default {
         IsEnemyTurn: false,
         gameResult: '',
         isGameOver: false,
+        isPlayerWin: false,
         ActionLogs: { 
           name: '',
           notificationType: 0, //0 - game notification, 1 - battle notification
@@ -193,7 +243,8 @@ export default {
 
                 console.log(this.myPlayer.equipmentBonus, 'equipmentBonus');
 
-                
+                // dungeon Battle Result Request
+                this.battleDungeonResult.characterId = characterId;
                 
                 eventBus.$emit('loading', false);
             })
@@ -209,6 +260,8 @@ export default {
         getEnemyDetails(){
             this.postEnterDungeon(this.enterDungeonRequest).then(res => {
                 this.dungeon = res.dungeon;
+          
+                console.log(this.battleDungeonResult, 'battleDungeonResult');
                 this.enemy.stats = res.enemy.stats;
                 this.enemy.name = res.enemy.name;
                 this.enemy.image = res.enemy.image;
@@ -216,8 +269,12 @@ export default {
                 this.enemy.stats.maxMana = res.enemy.stats.mana;
                 this.enemySkills = this.baseSkills.concat(res.enemy.skills);
                 this.isEnemyLoaded = true;
-                 //this.enemyAction();
-                 console.log(res, 'enemy details');
+
+                console.log(res, 'enemy details');
+
+                // dungeon battle result
+                this.battleDungeonResult.dungeonId = res.dungeon._id;
+                this.battleDungeonResult.enemyId = res.enemy._id;
                 
                 // console.log(this.dungeon , 'dungeon');
                 eventBus.$emit('loading',false);
@@ -245,9 +302,6 @@ export default {
                     this.IsEnemyTurn = false;
                 }
             }, 4000);
-
-            
-            
         },
         getRandomNumber(value) {
             // return random number 
@@ -258,8 +312,6 @@ export default {
             return Math.min(Math.max(parseInt(value), 0), maxValue);
         },
         actionValue(move, isPlayer = true){
-
-
             let totalDamage = 0;
             
             if (move.target == "enemy") {
@@ -373,13 +425,40 @@ export default {
             // value = count of enemy skill
             return Math.floor(Math.random() * Math.floor(value));
         },
+        reEnterDungeon(){
+            console.log('reenter');
+            // this.$router.push(`/dungeon/${this.$route.params.id}`).catch(()=>{});
+            this.$router.go();
+        },
         dialogClose(){
             // this.isGameBattle = false;
             eventBus.$emit('isGameBattle', false);
             this.$router.push(`/dungeon`);
+        },
+        isEmpty(value){
+            console.log(value, 'isempty');
+            return (value == null || value.length === 0 || value == "");
+        },
+        dungeonBattleResult() {
+            console.log('battle result');
+             this.postDungeonBattle(this.battleDungeonResult).then(res => {
+                console.log(res, 'game result');
+                this.battleResult = res;
+                this.$bvModal.show('modal-result');
+                eventBus.$emit('loading',false);
+            })
+            .catch(error => {
+                    console.log(error, 'error');
+                    const errorObj = error.bodyText;
+                    this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
+                    eventBus.$emit('loading',false);
+                    this.$router.push(`/unauthorized`);
+            });
+
         }
     },
     computed: {
+        
         // firstAttack(){
         //     return this.getRandomValue(2);            
         // },
@@ -403,9 +482,12 @@ export default {
             handler: function(val){
                 if (this.enemy.stats.health == 0)
                 {
+                    eventBus.$emit('loading', true);
+                    this.isPlayerWin = true;
                     this.isGameOver = true;
-                    this.$bvModal.show('modal-result');
                     this.gameResult = 'You Win'
+                    this.dungeonBattleResult();
+               
                 }
             },
             deep: true
@@ -415,6 +497,7 @@ export default {
                 // console.log(this.myPlayer.stats.health, 'my health');
                 if (this.myPlayer.stats.health == 0)
                 {
+                    this.isPlayerWin = false;
                     this.isGameOver = true;
                     this.$bvModal.show('modal-result');
                     this.gameResult = 'You died'

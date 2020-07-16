@@ -83,6 +83,33 @@ export default {
         left: 135px;
     }
 
+    .tower-guard {
+        position: relative;
+        left: 119px;
+        height: 483px;
+    }
+
+    .wandering-hero {
+        position: relative;
+        height: 312px;
+        top: 167px;
+        left: 251px;
+    }
+
+    .vengeful-spirit {
+        position: relative;
+        height: 257px;
+        top: 200px;
+        left: 249px;
+    }
+
+    .arch-mage {
+        left: 196px;
+        position: relative;
+        height: 309px;
+        top: 181px;
+    }
+
     .archer {
         position: relative;
         height: 274px;
