@@ -30,7 +30,8 @@
                 <b-col cols="3">
                 <b-form-input  
                     type="password"
-                    v-model.lazy="loginData.password"     
+                    v-model.lazy="loginData.password"
+                    v-on:keyup.enter="login"     
                     @blur="$v.loginData.password.$touch()">
                 </b-form-input>
                 <p  v-if="!$v.loginData.password.required
@@ -84,18 +85,19 @@ export default {
     mixins: [accountService],
     methods: {
         login() {
-            eventBus.$emit('loading', true);
-            this.loginAccount(this.loginData).then(res => {
-                this.getAccount(res.accountId);
-                this.$alertify.alertWithTitle("Login", "Login Success");
-                eventBus.$emit('loading',false);
-            })
-            .catch(error => {
-                console.log(error, 'error');
-                const errorObj = error.bodyText;
-                this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
-                eventBus.$emit('loading',false);
-            });
+            alert('titeng galit')
+            // eventBus.$emit('loading', true);
+            // this.loginAccount(this.loginData).then(res => {
+            //     this.getAccount(res.accountId);
+            //     this.$alertify.alertWithTitle("Login", "Login Success");
+            //     eventBus.$emit('loading',false);
+            // })
+            // .catch(error => {
+            //     console.log(error, 'error');
+            //     const errorObj = error.bodyText;
+            //     this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
+            //     eventBus.$emit('loading',false);
+            // });
         },
         getAccount(accountId){
             this.getCharacterDetails(accountId).then(res => {

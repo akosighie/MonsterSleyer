@@ -23,7 +23,7 @@
                     </b-col>
                 </b-row>
 
-                <b-row>
+                <b-row class="margintop10">
                      <b-col cols="1">
                   <label for="">Password</label>
                 </b-col>
@@ -31,7 +31,8 @@
                 <b-col cols="3">
                 <b-form-input  
                     type="password"
-                    v-model.lazy="loginData.password"     
+                    v-model.lazy="loginData.password"
+                     v-on:keyup.enter="login"       
                     @blur="$v.loginData.password.$touch()">
                 </b-form-input>
 
@@ -43,7 +44,7 @@
                 </b-col>
                 </b-row>
 
-                <b-row >
+                <b-row class="margintop10">
                     <b-col  offset-md="1"  cols="4">
                         <b-button
                             variant="info"
@@ -89,7 +90,7 @@ export default {
         }
     },
     methods: {
-        login() {
+        login() {           
             eventBus.$emit('loading', true);
             this.loginAccount(this.loginData).then(res => {
                 // this.getAccount(res.accountId);
@@ -152,5 +153,9 @@ export default {
 
     input {
         font-family:  'Arial Narrow';
+    }
+
+    .margintop10{
+        margin-top:10px;
     }
 </style>
