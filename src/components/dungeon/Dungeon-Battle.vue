@@ -247,9 +247,6 @@ export default {
                 this.myPlayer.stats.maxHealth = this.myPlayer.stats.health; //
                 this.myPlayer.stats.maxMana = this.myPlayer.stats.mana;
 
-                console.log(res.stats.health + this.myPlayer.equipmentBonus.health, 'test');
-                console.log(`${this.myPlayer.stats.health} / ${this.myPlayer.stats.maxHealth}`);
-
                 // dungeon Battle Result Request
                 this.battleDungeonResult.characterId = characterId;
                 
@@ -305,7 +302,6 @@ export default {
         },
         enemyManaChecker() {
             if (this.enemy.stats.mana > this.enemySkills[this.skillId].cost) {
-                console.log('mana okay');
                  this.actionValue(this.enemySkills[this.skillId], false);
                  this.IsEnemyTurn = false;
             }
@@ -397,7 +393,6 @@ export default {
 
                     // rest / add mana
                     if (move.type == "r"){
-                        console.log(this.myPlayer.stats.int, 'this.myplayer.stats.int');
                         this.myPlayer.stats.mana = this.roundOffMinMaxValue((this.myPlayer.stats.mana - move.damage) + this.myPlayer.stats.int, this.myPlayer.stats.maxMana);
                         this.ActionLogs.skillType = 0;
                     }
