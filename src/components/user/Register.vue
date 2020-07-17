@@ -124,8 +124,9 @@
               <b-row align-h="center">
                 <b-col cols="4">
                       <img  
+                      v-if="PlayerAccount.classType > 0"
                       class="saber"
-                      :src="CharacterModelUrl(classType)" 
+                      :src="CharacterModelUrl(PlayerAccount.classType)" 
                       />
                 </b-col> 
               </b-row>
@@ -195,6 +196,10 @@ export default {
         font-family: "OptimusPrinceps";
     }
 
+    input {
+        font-family:  'Arial Narrow';
+    }
+
     .saber {
     height: 250px;
     }
@@ -203,8 +208,8 @@ export default {
     }
      .marginBottom10{
        margin-bottom: 10px;
-}
-.error-message {
-    color: red;
-}
+    }
+    .error-message {
+        color: red;
+    }
 </style>

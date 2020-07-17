@@ -67,9 +67,6 @@ export const dungeonHelperMixin = {
     },
     methods: {
         GetDungeonImageUrl(id){
-            // console.log(dungeonName, 'name');
-            console.log(id, 'dun');
-            // return 'abcdef';
             return this.dungeon.find(d => d.id == id).dungeonImgUrl;
         }
     }

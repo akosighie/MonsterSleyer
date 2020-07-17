@@ -228,8 +228,8 @@ export default {
                 
                 this.myPlayer.equipments = res.equipment;
                 this.playerSkills = this.baseSkills.concat(res.skills);
-                console.log(res, 'character result');
-                console.log(this.myPlayer.equipments, 'character result');
+                // console.log(res, 'character result');
+                // console.log(this.myPlayer.equipments, 'character result');
 
                 // equipment 
                 this.myPlayer.equipmentBonus.health = this.myPlayer.equipments.armor.bonus.health + this.myPlayer.equipments.weapon.bonus.health;
@@ -240,10 +240,15 @@ export default {
                 this.myPlayer.equipmentBonus.luk = this.myPlayer.equipments.armor.bonus.luk + this.myPlayer.equipments.weapon.bonus.luk;
                 this.myPlayer.equipmentBonus.def = this.myPlayer.equipments.armor.bonus.def + this.myPlayer.equipments.weapon.bonus.def;
 
-                this.myPlayer.stats.maxHealth = res.stats.health + this.myPlayer.equipmentBonus.health;
-                this.myPlayer.stats.maxMana = res.stats.mana + this.myPlayer.equipmentBonus.mana;
 
-                console.log(this.myPlayer.equipmentBonus, 'equipmentBonus');
+                // get health and mana plus equipment bonus 
+                this.myPlayer.stats.health =  res.stats.health + this.myPlayer.equipmentBonus.health;
+                this.myPlayer.stats.mana = res.stats.mana + this.myPlayer.equipmentBonus.health;
+                this.myPlayer.stats.maxHealth = this.myPlayer.stats.health; //
+                this.myPlayer.stats.maxMana = this.myPlayer.stats.mana;
+
+                console.log(res.stats.health + this.myPlayer.equipmentBonus.health, 'test');
+                console.log(`${this.myPlayer.stats.health} / ${this.myPlayer.stats.maxHealth}`);
 
                 // dungeon Battle Result Request
                 this.battleDungeonResult.characterId = characterId;
@@ -251,7 +256,7 @@ export default {
                 eventBus.$emit('loading', false);
             })
             .catch(error => {
-                console.log(error, 'error 5');
+                console.log(error, 'error');
                 const errorObj = error.bodyText;
                 this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                 eventBus.$emit('loading', false);
@@ -262,8 +267,6 @@ export default {
         getEnemyDetails(){
             this.postEnterDungeon(this.enterDungeonRequest).then(res => {
                 this.dungeon = res.dungeon;
-          
-                console.log(this.battleDungeonResult, 'battleDungeonResult');
                 this.enemy.stats = res.enemy.stats;
                 this.enemy.name = res.enemy.name;
                 this.enemy.image = res.enemy.image;
@@ -272,13 +275,10 @@ export default {
                 this.enemySkills = this.baseSkills.concat(res.enemy.skills);
                 this.isEnemyLoaded = true;
 
-                console.log(res, 'enemy details');
-
                 // dungeon battle result
                 this.battleDungeonResult.dungeonId = res.dungeon._id;
                 this.battleDungeonResult.enemyId = res.enemy._id;
                 
-                // console.log(this.dungeon , 'dungeon');
                 eventBus.$emit('loading',false);
                 eventBus.$emit('isGameBattle', true);
                 eventBus.$emit('dungeonImage', this.dungeon.image);
@@ -294,29 +294,23 @@ export default {
         },
         enemyAction(){
             this.skillLength = this.enemySkills.length;
-            // eventBus.$emit('loading',true);
-           this.IsEnemyTurn = true;
+            this.IsEnemyTurn = true;
                     
             setTimeout(() => {
                 if (!this.isGameOver) {
                     this.skillId =  this.getRandomValue(this.skillLength);
                     this.enemyManaChecker();
-                    // console.log(this.enemySkills[this.skillId], 'enemy attack');
-                    // this.actionValue(this.enemySkills[this.skillId], false);
-                    //this.IsEnemyTurn = false;
                 }
             }, 4000);
         },
         enemyManaChecker() {
-            console.log(this.enemy.stats.mana, 'this.enemy.stats.mana');
-            console.log(this.enemySkills[this.skillId].cost, 'this.enemySkills[this.skillId].cost');
             if (this.enemy.stats.mana > this.enemySkills[this.skillId].cost) {
                 console.log('mana okay');
                  this.actionValue(this.enemySkills[this.skillId], false);
                  this.IsEnemyTurn = false;
             }
             else {
-                console.log('recheck again');
+                // console.log('recheck again');
                 this.skillId =  this.getRandomValue(this.skillLength);
                 this.enemyManaChecker(this.skillId);
             }
@@ -335,15 +329,23 @@ export default {
             if (move.target == "enemy") {
                 
                 if (isPlayer) {
+
                     // player move 
                     if (move.type = "P"){
-                        // physical attack
+                        // player physical attack
                         totalDamage = parseInt(move.damage) + parseInt(this.myPlayer.stats.off) + parseInt(this.myPlayer.equipmentBonus.off);
-                        console.log(totalDamage, 'totalDamage');
-                        this.enemy.stats.health = this.roundOffMinMaxValue((this.enemy.stats.health + this.enemy.stats.def) - totalDamage, this.enemy.stats.maxHealth );
+                        
+                        // enemy def > player attack
+                        if (this.enemy.stats.def > totalDamage) {
+                            totalDamage = 0;
+                        }
+                        else {
+                            this.enemy.stats.health = this.roundOffMinMaxValue((this.enemy.stats.health + this.enemy.stats.def) - totalDamage, this.enemy.stats.maxHealth );
+                        }
+                        
                     }
                     else {
-                        // magic attack
+                        // player magic attack
                         totalDamage = parseInt(move.damage) + parseInt(this.myPlayer.stats.int) + parseInt(this.myPlayer.equipmentBonus.int);
                         this.enemy.stats.health = this.roundOffMinMaxValue((this.enemy.stats.health + this.eneny.stats.int) - totalDamage, this.enemy.stats.maxHealth );
                     }
@@ -359,13 +361,22 @@ export default {
                 else {
                     // enemy move    
                     if (move.type = "P"){ 
-                        // physical attack
+
+                        // enemy physical attack
                         totalDamage = parseInt(move.damage) + parseInt(this.enemy.stats.off);
-                        console.log(totalDamage, 'enemy total damage');
-                        this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health + this.myPlayer.stats.def + this.myPlayer.equipmentBonus.def - totalDamage, this.myPlayer.stats.maxHealth);
+                        
+                        // player defense > enemy attack
+                        if (this.myPlayer.stats.def + this.myPlayer.equipmentBonus.def > totalDamage) {
+                            totalDamage = 0;
+                        }
+                        else 
+                        {   
+                            this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.health + this.myPlayer.stats.def + this.myPlayer.equipmentBonus.def - totalDamage, this.myPlayer.stats.maxHealth);
+                        }
+
                     }
                     else {
-                        // magic attack
+                        // enemy magic attack
                         totalDamage = parseInt(move.damage) + parseInt(this.enemy.stats.int);
                         this.myPlayer.stats.health = this.roundOffMinMaxValue(this.myPlayer.stats.healst + this.myPlayer.stats.int + this.myPlayer.equipmentBonus.int - totalDamage, this.myPlayer.stats.maxHealth);
                     }
@@ -384,9 +395,10 @@ export default {
                 // player move
                 if (isPlayer) {
 
-                    // rest
+                    // rest / add mana
                     if (move.type == "r"){
-                        this.myPlayer.stats.mana = this.roundOffMinMaxValue(this.myPlayer.stats.mana - move.damage, this.myPlayer.stats.maxMana);
+                        console.log(this.myPlayer.stats.int, 'this.myplayer.stats.int');
+                        this.myPlayer.stats.mana = this.roundOffMinMaxValue((this.myPlayer.stats.mana - move.damage) + this.myPlayer.stats.int, this.myPlayer.stats.maxMana);
                         this.ActionLogs.skillType = 0;
                     }
                     // player skill with heal
@@ -433,7 +445,7 @@ export default {
 
             this.isPlayerAttackFirst = (this.myPlayer.stats.agi > this.enemy.stats.agi);
             
-            console.log(this.isPlayerAttackFirst);
+            // console.log(this.isPlayerAttackFirst);
 
             this.ActionLogs.name = (this.myPlayer.stats.agi + this.myPlayer.equipmentBonus.agi) > this.enemy.stats.agi ? this.myPlayer.name : this.enemy.name;
             this.ActionLogs.notificationType = 0;
@@ -445,7 +457,6 @@ export default {
             return Math.floor(Math.random() * Math.floor(value));
         },
         reEnterDungeon(){
-            console.log('reenter');
             // this.$router.push(`/dungeon/${this.$route.params.id}`).catch(()=>{});
             this.$router.go();
         },
@@ -455,19 +466,15 @@ export default {
             this.$router.push(`/dungeon`);
         },
         isEmpty(value){
-            console.log(value, 'isempty');
             return (value == null || value.length === 0 || value == "");
         },
         dungeonBattleResult() {
-            console.log('battle result');
              this.postDungeonBattle(this.battleDungeonResult).then(res => {
-                console.log(res, 'game result');
                 this.battleResult = res;
                 this.$bvModal.show('modal-result');
                 eventBus.$emit('loading',false);
             })
             .catch(error => {
-                    console.log(error, 'error 3');
                     const errorObj = error.bodyText;
                     this.$alertify.alertWithTitle("Login", JSON.parse(errorObj).error); 
                     eventBus.$emit('loading',false);

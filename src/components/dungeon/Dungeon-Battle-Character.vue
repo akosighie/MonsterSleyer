@@ -145,6 +145,42 @@ export default {
         left: 163px;
     }
 
+    .crixalis {
+        position: relative;
+        height: 328px;
+        top: 191px;
+        left: 64px;
+    }
+
+    .giant-cactuar {
+        position: relative;
+        height: 498px;
+        left: 119px;
+        top: -25PX;
+    }
+
+    .mummy {
+        position: relative;
+        height: 251px;
+        top: 239px;
+        left: 199px;
+    }
+
+    .cactuar {
+        position: relative;
+        height: 174px;
+        top: 275px;
+        left: 236px;
+    }
+
+    .sand-wyrm {
+        position: relative;
+        height: 339px;
+        top: 156px;
+        left: 15px;
+    }
+
+
 
 
     .archer {

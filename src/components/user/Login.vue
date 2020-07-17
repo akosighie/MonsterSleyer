@@ -117,7 +117,6 @@ export default {
         },
         getAccount(accountId){
             this.getCharacterDetails(accountId).then(res => {
-                console.log(res, 'getaccount');
                 this.$emit('player-info', res);
             });
         },

@@ -28,7 +28,7 @@
           
       </b-row>
       <b-modal
-      title="Choose Skills" 
+        title="Choose Skills" 
         ref="skill-modal" 
         hide-footer  
         size="lg" 
@@ -54,12 +54,12 @@ export default {
              headerBgVariant: 'dark',
         }
     },
-      components: {
-        'character-skill-inventory':CharacterSkillInventory
-      },
+    components: {
+      'character-skill-inventory':CharacterSkillInventory
+    },
     props: {
-        skills: {},
-        characterInfo:{}
+      skills: {},
+      characterInfo:{}
     },
     methods:{
          showmodal(){

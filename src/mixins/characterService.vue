@@ -30,7 +30,6 @@ export default {
             );
         },
           updateCharacterSkills(characterId, skills){
-            console.log(skills);
             return this.$http.put(`${apiUrl}${service}/${characterId}/skills`, skills).then(res => res);
         },
           
