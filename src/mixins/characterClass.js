@@ -21,7 +21,7 @@ export const characterClassMixin = {
             characterClass: [{
                 id: 1,
                 name: 'Saber',
-                characterModel: require('../assets/medival_knight.png'),
+                characterModel: require('../assets/saber.png'),
                 skill:[
                     {
                         name: 'Crusader Strike',
